@@ -92,7 +92,6 @@
 		FD3D17FC1ABDFFEF005BE139 /* lemon */ = {
 			isa = PBXGroup;
 			children = (
-				FD3D18241ABE040E005BE139 /* lemon.h */,
 				FD3D182A1ABE0C57005BE139 /* Source */,
 				FD3D18251ABE06CC005BE139 /* main.c */,
 			);
@@ -111,6 +110,7 @@
 				FD3D18071ABE010B005BE139 /* configlist.c */,
 				FD3D180B1ABE012C005BE139 /* error.h */,
 				FD3D180A1ABE012C005BE139 /* error.c */,
+				FD3D18241ABE040E005BE139 /* lemon.h */,
 				FD3D18281ABE0922005BE139 /* msort.h */,
 				FD3D18271ABE0922005BE139 /* msort.c */,
 				FD3D180E1ABE0141005BE139 /* option.h */,

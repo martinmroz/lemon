@@ -12,6 +12,6 @@
 
 #include "lemon.h"
 
-void ErrorMsg(const char *, int,const char *, ...);
+void ErrorMsg(const char *, int, const char *, ...);
 
 #endif /* defined(__lemon_error_h__) */
