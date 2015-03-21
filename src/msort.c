@@ -56,7 +56,7 @@ static char *merge(
                    char *a,
                    char *b,
                    int (*cmp)(const char*,const char*),
-                   int offset
+                   ptrdiff_t offset
                    ){
     char *ptr, *head;
     
@@ -109,7 +109,7 @@ char *msort(
             char **next,
             int (*cmp)(const char*,const char*)
             ){
-    unsigned long offset;
+    ptrdiff_t offset;
     char *ep;
     char *set[LISTSIZE];
     int i;

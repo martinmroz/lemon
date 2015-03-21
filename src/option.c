@@ -21,12 +21,12 @@ static FILE *errstream;
  */
 static void errline(n,k,err)
 int n;
-int k;
+size_t k;
 FILE *err;
 {
     int spcnt, i;
     if( argv[0] ) fprintf(err,"%s",argv[0]);
-        spcnt = strlen(argv[0]) + 1;
+        spcnt = (int)strlen(argv[0]) + 1;
         for(i=1; i<n && argv[i]; i++){
             fprintf(err," %s",argv[i]);
             spcnt += strlen(argv[i])+1;
@@ -149,7 +149,7 @@ FILE *err;
                 break;
             case OPT_INT:
             case OPT_FINT:
-                lv = strtol(cp,&end,0);
+                lv = (int)strtol(cp,&end,0);
                 if( *end ){
                     if( err ){
                         fprintf(err,"%sillegal character in integer argument.\n",emsg);
@@ -251,7 +251,7 @@ void OptPrint(){
     int max, len;
     max = 0;
     for(i=0; op[i].label; i++){
-        len = strlen(op[i].label) + 1;
+        len = (int)strlen(op[i].label) + 1;
         switch( op[i].type ){
             case OPT_FLAG:
             case OPT_FFLAG:
