@@ -75,7 +75,7 @@ struct lemon *lemp;
     maxlen = 10;
     for(i=0; i<lemp->nsymbol; i++){
         sp = lemp->symbols[i];
-        len = strlen(sp->name);
+        len = (int)strlen(sp->name);
         if( len>maxlen ) maxlen = len;
     }
     ncolumns = 76/(maxlen+5);
@@ -549,7 +549,7 @@ PRIVATE char *append_str(char *zText, int n, int p1, int p2){
             used += n;
             assert( used>=0 );
         }
-        n = strlen(zText);
+        n = (int)strlen(zText);
     }
     if( n+sizeof(zInt)*2+used >= alloced ){
         alloced = n + sizeof(zInt)*2 + used + 200;
@@ -718,13 +718,13 @@ int mhflag;                 /* True if generating makeheaders output */
     for(i=0; i<arraysize; i++) types[i] = 0;
         maxdtlength = 0;
         if( lemp->vartype ){
-            maxdtlength = strlen(lemp->vartype);
+            maxdtlength = (int)strlen(lemp->vartype);
         }
     for(i=0; i<lemp->nsymbol; i++){
         int len;
         struct symbol *sp = lemp->symbols[i];
         if( sp->datatype==0 ) continue;
-        len = strlen(sp->datatype);
+        len = (int)strlen(sp->datatype);
         if( len>maxdtlength ) maxdtlength = len;
     }
     stddt = (char*)malloc( maxdtlength*2 + 1 );
@@ -993,7 +993,7 @@ int mhflag;     /* Output in makeheaders format if true */
         name = lemp->name ? lemp->name : "Parse";
         if( lemp->arg && lemp->arg[0] ){
             int i;
-            i = strlen(lemp->arg);
+            i = (int)strlen(lemp->arg);
             while( i>=1 && isspace(lemp->arg[i-1]) ) i--;
             while( i>=1 && (isalnum(lemp->arg[i-1]) || lemp->arg[i-1]=='_') ) i--;
             fprintf(out,"#define %sARG_SDECL %s;\n",name,lemp->arg);  lineno++;

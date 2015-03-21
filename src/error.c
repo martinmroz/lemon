@@ -58,13 +58,13 @@ void ErrorMsg(const char *filename, int lineno, const char *format, ...){
     }else{
         sprintf(prefix,"%.*s: ",PREFIXLIMIT-10,filename);
     }
-    prefixsize = strlen(prefix);
+    prefixsize = (int)strlen(prefix);
     availablewidth = LINEWIDTH - prefixsize;
     
     /* Generate the error message */
     vsprintf(errmsg,format,ap);
     va_end(ap);
-    errmsgsize = strlen(errmsg);
+    errmsgsize = (int)strlen(errmsg);
     /* Remove trailing '\n's from the error message. */
     while( errmsgsize>0 && errmsg[errmsgsize-1]=='\n' ){
         errmsg[--errmsgsize] = 0;
