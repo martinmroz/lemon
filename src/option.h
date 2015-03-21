@@ -12,7 +12,6 @@
 
 #include "lemon.h"
 
-/****** From the file "option.h" ******************************************/
 struct s_options {
     enum { OPT_FLAG=1,  OPT_INT,  OPT_DBL,  OPT_STR,
         OPT_FFLAG, OPT_FINT, OPT_FDBL, OPT_FSTR} type;
