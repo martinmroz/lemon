@@ -41,10 +41,7 @@ struct action *Action_new(void){
  ** positive if the first action is less than, equal to, or greater than
  ** the first
  */
-static int actioncmp(
-                     struct action *ap1,
-                     struct action *ap2
-                     ){
+static int actioncmp(struct action *ap1, struct action *ap2){
     int rc;
     rc = ap1->sp->index - ap2->sp->index;
     if( rc==0 ){
@@ -57,19 +54,12 @@ static int actioncmp(
 }
 
 /* Sort parser actions */
-struct action *Action_sort(
-                           struct action *ap
-                           ){
-    ap = (struct action *)msort((char *)ap,(char **)&ap->next,
-                                (int(*)(const char*,const char*))actioncmp);
-    return ap;
+struct action *Action_sort(struct action *ap)
+{
+    return (struct action *)msort((char *)ap,(char **)&ap->next, (msort_comparator)actioncmp);
 }
 
-void Action_add(app,type,sp,arg)
-struct action **app;
-enum e_action type;
-struct symbol *sp;
-char *arg;
+void Action_add(struct action **app, enum e_action type, struct symbol *sp, char *arg)
 {
     struct action *new;
     new = Action_new();
@@ -83,6 +73,7 @@ char *arg;
         new->x.rp = (struct rule *)arg;
     }
 }
+
 /********************** New code to implement the "acttab" module ***********/
 /*
  ** This module implements routines use to construct the yy_action[] table.
