@@ -12,13 +12,22 @@
 
 #include "lemon.h"
 
-void  SetSize(/* int N */);             /* All sets will be of size N */
-char *SetNew(/* void */);               /* A new set for element 0..N */
-void  SetFree(/* char* */);             /* Deallocate a set */
+/** All sets will be of size N */
+void  SetSize(int N);
 
-int SetAdd(/* char*,int */);            /* Add element to a set */
-int SetUnion(/* char *A,char *B */);    /* A <- A U B, thru element N */
+/** A new set for element 0..N */
+char *SetNew(void);
 
-#define SetFind(X,Y) (X[Y])       /* True if Y is in set X */
+/** Deallocate a set */
+void  SetFree(char*);
+
+/** Add element to a set */
+int SetAdd(char*,int);
+
+/** A <- A U B, thru element N */
+int SetUnion(char *A,char *B);
+
+/** True if Y is in set X */
+#define SetFind(X,Y) (X[Y])
 
 #endif /* defined(__lemon_set_h__) */

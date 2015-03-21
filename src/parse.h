@@ -14,6 +14,6 @@
 
 #include "struct.h"
 
-void Parse(/* struct lemon *lemp */);
+void Parse(struct lemon *lemp);
 
 #endif /* defined(__lemon_parse_h__) */

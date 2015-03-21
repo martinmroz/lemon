@@ -12,7 +12,6 @@
 #include "action.h"
 #include "error.h"
 #include "set.h"
-#include "struct.h"
 #include "table.h"
 
 /*
@@ -23,9 +22,7 @@
  ** name comes from malloc() and must be freed by the calling
  ** function.
  */
-PRIVATE char *file_makename(lemp,suffix)
-struct lemon *lemp;
-char *suffix;
+PRIVATE char *file_makename(struct lemon *lemp, char *suffix)
 {
     char *name;
     char *cp;
@@ -45,10 +42,7 @@ char *suffix;
 /* Open a file with a name based on the name of the input file,
  ** but with a different (specified) suffix, and return a pointer
  ** to the stream */
-PRIVATE FILE *file_open(lemp,suffix,mode)
-struct lemon *lemp;
-char *suffix;
-char *mode;
+PRIVATE FILE *file_open(struct lemon *lemp, char *suffix, char *mode)
 {
     FILE *fp;
     
@@ -65,8 +59,7 @@ char *mode;
 
 /* Duplicate the input file without comments and without actions
  ** on rules */
-void Reprint(lemp)
-struct lemon *lemp;
+void Reprint(struct lemon *lemp)
 {
     struct rule *rp;
     struct symbol *sp;
@@ -75,7 +68,7 @@ struct lemon *lemp;
     maxlen = 10;
     for(i=0; i<lemp->nsymbol; i++){
         sp = lemp->symbols[i];
-        len = strlen(sp->name);
+        len = (int)strlen(sp->name);
         if( len>maxlen ) maxlen = len;
     }
     ncolumns = 76/(maxlen+5);
@@ -111,9 +104,7 @@ struct lemon *lemp;
     }
 }
 
-void ConfigPrint(fp,cfp)
-FILE *fp;
-struct config *cfp;
+void ConfigPrint(FILE *fp, struct config *cfp)
 {
     struct rule *rp;
     struct symbol *sp;
@@ -136,10 +127,7 @@ struct config *cfp;
 /* #define TEST */
 #if 0
 /* Print a set */
-PRIVATE void SetPrint(out,set,lemp)
-FILE *out;
-char *set;
-struct lemon *lemp;
+PRIVATE void SetPrint(FILE *out, char *set, struct lemon *lemp)
 {
     int i;
     char *spacer;
@@ -155,10 +143,7 @@ struct lemon *lemp;
 }
 
 /* Print a plink chain */
-PRIVATE void PlinkPrint(out,plp,tag)
-FILE *out;
-struct plink *plp;
-char *tag;
+PRIVATE void PlinkPrint(FILE *out, struct plink *plp, char *tag)
 {
     while( plp ){
         fprintf(out,"%12s%s (state %2d) ","",tag,plp->cfp->stp->statenum);
@@ -206,8 +191,7 @@ int PrintAction(struct action *ap, FILE *fp, int indent){
 }
 
 /* Generate the "y.output" log file */
-void ReportOutput(lemp)
-struct lemon *lemp;
+void ReportOutput(struct lemon *lemp)
 {
     int i;
     struct state *stp;
@@ -273,10 +257,7 @@ struct lemon *lemp;
 
 /* Search for the file "name" which is in the same directory as
  ** the exacutable */
-PRIVATE char *pathsearch(argv0,name,modemask)
-char *argv0;
-char *name;
-int modemask;
+PRIVATE char *pathsearch(char *argv0, char *name, int modemask)
 {
     char *pathlist;
     char *path,*cp;
@@ -319,9 +300,7 @@ int modemask;
  ** which is to be put in the action table of the generated machine.
  ** Return negative if no action should be generated.
  */
-PRIVATE int compute_action(lemp,ap)
-struct lemon *lemp;
-struct action *ap;
+PRIVATE int compute_action(struct lemon *lemp, struct action *ap)
 {
     int act;
     switch( ap->type ){
@@ -344,11 +323,7 @@ struct action *ap;
  ** if name!=0, then any word that begin with "Parse" is changed to
  ** begin with *name instead.
  */
-PRIVATE void tplt_xfer(name,in,out,lineno)
-char *name;
-FILE *in;
-FILE *out;
-int *lineno;
+PRIVATE void tplt_xfer(char *name, FILE *in, FILE *out, int *lineno)
 {
     int i, iStart;
     char line[LINESIZE];
@@ -373,8 +348,7 @@ int *lineno;
 
 /* The next function finds the template file and opens it, returning
  ** a pointer to the opened file. */
-PRIVATE FILE *tplt_open(lemp)
-struct lemon *lemp;
+PRIVATE FILE *tplt_open(struct lemon *lemp)
 {
     static char templatename_c[] = "/usr/local/share/lemon/skeleton.c";
     static char templatename_cpp[] = "/usr/local/share/lemon/skeleton.cc";
@@ -421,10 +395,7 @@ struct lemon *lemp;
 }
 
 /* Print a #line directive line to the output file. */
-PRIVATE void tplt_linedir(out,lineno,filename)
-FILE *out;
-int lineno;
-char *filename;
+PRIVATE void tplt_linedir(FILE *out, int lineno, char *filename)
 {
     fprintf(out,"#line %d \"",lineno);
     while( *filename ){
@@ -436,12 +407,7 @@ char *filename;
 }
 
 /* Print a string to the file and keep the linenumber up to date */
-PRIVATE void tplt_print(out,lemp,str,strln,lineno)
-FILE *out;
-struct lemon *lemp;
-char *str;
-int strln;
-int *lineno;
+PRIVATE void tplt_print(FILE *out, struct lemon *lemp, char *str, int strln, int *lineno)
 {
     if( str==0 ) return;
     tplt_linedir(out,strln,lemp->filename);
@@ -464,11 +430,7 @@ int *lineno;
  ** The following routine emits code for the destructor for the
  ** symbol sp
  */
-void emit_destructor_code(out,sp,lemp,lineno)
-FILE *out;
-struct symbol *sp;
-struct lemon *lemp;
-int *lineno;
+void emit_destructor_code(FILE *out, struct symbol *sp, struct lemon *lemp, int *lineno)
 {
     char *cp = 0;
     
@@ -508,9 +470,7 @@ int *lineno;
 /*
  ** Return TRUE (non-zero) if the given symbol has a destructor.
  */
-int has_destructor(sp, lemp)
-struct symbol *sp;
-struct lemon *lemp;
+int has_destructor(struct symbol *sp, struct lemon *lemp)
 {
     int ret;
     if( sp->type==TERMINAL ){
@@ -549,7 +509,7 @@ PRIVATE char *append_str(char *zText, int n, int p1, int p2){
             used += n;
             assert( used>=0 );
         }
-        n = strlen(zText);
+        n = (int)strlen(zText);
     }
     if( n+sizeof(zInt)*2+used >= alloced ){
         alloced = n + sizeof(zInt)*2 + used + 200;
@@ -666,11 +626,7 @@ PRIVATE void translate_code(struct lemon *lemp, struct rule *rp){
  ** Generate code which executes when the rule "rp" is reduced.  Write
  ** the code to "out".  Make sure lineno stays up-to-date.
  */
-PRIVATE void emit_code(out,rp,lemp,lineno)
-FILE *out;
-struct rule *rp;
-struct lemon *lemp;
-int *lineno;
+PRIVATE void emit_code(FILE *out, struct rule *rp, struct lemon *lemp, int *lineno)
 {
     char *cp;
     int linecnt = 0;
@@ -697,11 +653,11 @@ int *lineno;
  ** union, also set the ".dtnum" field of every terminal and nonterminal
  ** symbol.
  */
-void print_stack_union(out,lemp,plineno,mhflag)
-FILE *out;                  /* The output stream */
-struct lemon *lemp;         /* The main info structure for this parser */
-int *plineno;               /* Pointer to the line number */
-int mhflag;                 /* True if generating makeheaders output */
+void print_stack_union(
+    FILE *out,                /* The output stream */
+    struct lemon *lemp,       /* The main info structure for this parser */
+    int *plineno,             /* Pointer to the line number */
+    int mhflag)               /* True if generating makeheaders output */
 {
     int lineno = *plineno;    /* The line number of the output */
     char **types;             /* A hash table of datatypes */
@@ -718,13 +674,13 @@ int mhflag;                 /* True if generating makeheaders output */
     for(i=0; i<arraysize; i++) types[i] = 0;
         maxdtlength = 0;
         if( lemp->vartype ){
-            maxdtlength = strlen(lemp->vartype);
+            maxdtlength = (int)strlen(lemp->vartype);
         }
     for(i=0; i<lemp->nsymbol; i++){
         int len;
         struct symbol *sp = lemp->symbols[i];
         if( sp->datatype==0 ) continue;
-        len = strlen(sp->datatype);
+        len = (int)strlen(sp->datatype);
         if( len>maxdtlength ) maxdtlength = len;
     }
     stddt = (char*)malloc( maxdtlength*2 + 1 );
@@ -889,9 +845,9 @@ static void writeRuleText(FILE *out, struct rule *rp){
 
 
 /* Generate C source code for the parser */
-void ReportTable(lemp, mhflag)
-struct lemon *lemp;
-int mhflag;     /* Output in makeheaders format if true */
+void ReportTable(
+    struct lemon *lemp,
+    int mhflag)     /* Output in makeheaders format if true */
 {
     FILE *out, *in;
     char line[LINESIZE];
@@ -993,7 +949,7 @@ int mhflag;     /* Output in makeheaders format if true */
         name = lemp->name ? lemp->name : "Parse";
         if( lemp->arg && lemp->arg[0] ){
             int i;
-            i = strlen(lemp->arg);
+            i = (int)strlen(lemp->arg);
             while( i>=1 && isspace(lemp->arg[i-1]) ) i--;
             while( i>=1 && (isalnum(lemp->arg[i-1]) || lemp->arg[i-1]=='_') ) i--;
             fprintf(out,"#define %sARG_SDECL %s;\n",name,lemp->arg);  lineno++;
@@ -1393,8 +1349,7 @@ int mhflag;     /* Output in makeheaders format if true */
 }
 
 /* Generate a header file for the parser */
-void ReportHeader(lemp)
-struct lemon *lemp;
+void ReportHeader(struct lemon *lemp)
 {
     FILE *out, *in;
     char *prefix;
@@ -1433,8 +1388,7 @@ struct lemon *lemp;
  ** it the default.  Except, there is no default if the wildcard token
  ** is a possible look-ahead.
  */
-void CompressTables(lemp)
-struct lemon *lemp;
+void CompressTables(struct lemon *lemp)
 {
     struct state *stp;
     struct action *ap, *ap2;
@@ -1514,8 +1468,7 @@ static int stateResortCompare(const void *a, const void *b){
  ** Renumber and resort states so that states with fewer choices
  ** occur at the end.  Except, keep state 0 as the first state.
  */
-void ResortStates(lemp)
-struct lemon *lemp;
+void ResortStates(struct lemon *lemp)
 {
     int i;
     struct state *stp;

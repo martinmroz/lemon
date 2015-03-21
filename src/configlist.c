@@ -101,9 +101,7 @@ int dot;            /* Index into the RHS of the rule where the dot goes */
 }
 
 /* Add a basis configuration to the configuration list */
-struct config *Configlist_addbasis(rp,dot)
-struct rule *rp;
-int dot;
+struct config *Configlist_addbasis(struct rule *rp, int dot)
 {
     struct config *cfp, model;
     
@@ -131,8 +129,7 @@ int dot;
 }
 
 /* Compute the closure of the configuration list */
-void Configlist_closure(lemp)
-struct lemon *lemp;
+void Configlist_closure(struct lemon *lemp)
 {
     struct config *cfp, *newcfp;
     struct rule *rp, *newrp;
@@ -178,14 +175,14 @@ struct lemon *lemp;
 
 /* Sort the configuration list */
 void Configlist_sort(){
-    current = (struct config *)msort((char *)current,(char **)&(current->next),Configcmp);
+    current = (struct config *)msort((char *)current,(char **)&(current->next),(msort_comparator)Configcmp);
     currentend = 0;
     return;
 }
 
 /* Sort the basis configuration list */
 void Configlist_sortbasis(){
-    basis = (struct config *)msort((char *)current,(char **)&(current->bp),Configcmp);
+    basis = (struct config *)msort((char *)current,(char **)&(current->bp),(msort_comparator)Configcmp);
     basisend = 0;
     return;
 }

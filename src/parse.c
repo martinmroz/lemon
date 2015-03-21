@@ -62,8 +62,7 @@ struct pstate {
 };
 
 /* Parse a single token */
-static void parseonetoken(psp)
-struct pstate *psp;
+static void parseonetoken(struct pstate *psp)
 {
     char *x;
     x = Strsafe(psp->tokenstart);     /* Save the token permanently */
@@ -533,8 +532,7 @@ static void preprocess_input(char *z){
  ** token is passed to the function "parseonetoken" which builds all
  ** the appropriate data structures in the global state vector "gp".
  */
-void Parse(gp)
-struct lemon *gp;
+void Parse(struct lemon *gp)
 {
     struct pstate ps;
     FILE *fp;
@@ -559,7 +557,7 @@ struct lemon *gp;
         return;
     }
     fseek(fp,0,2);
-    filesize = ftell(fp);
+    filesize = (int)ftell(fp);
     rewind(fp);
     filebuf = (char *)malloc( filesize+1 );
     if( filebuf==0 ){

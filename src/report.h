@@ -12,11 +12,13 @@
 
 #include "lemon.h"
 
-void Reprint(/* struct lemon * */);
-void ReportOutput(/* struct lemon * */);
-void ReportTable(/* struct lemon * */);
-void ReportHeader(/* struct lemon * */);
-void CompressTables(/* struct lemon * */);
-void ResortStates(/* struct lemon * */);
+#include "struct.h"
+
+void Reprint(struct lemon *);
+void ReportOutput(struct lemon *);
+void ReportTable(struct lemon *, int);
+void ReportHeader(struct lemon *);
+void CompressTables(struct lemon *);
+void ResortStates(struct lemon *);
 
 #endif /* defined(__lemon_report_h__) */
