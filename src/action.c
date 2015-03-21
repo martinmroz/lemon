@@ -1,6 +1,10 @@
 /*
  *  Created by Martin Mroz on 3/21/15.
- *  Copyright (c) 2015 Martin Mroz. All rights reserved.
+ *
+ *  The author of the original program disclaims copyright.
+ *  D language support Copyright (GPL) Serge Vakulenko <serge@vak.ru>.
+ *  Copyright (GPL) (c) 2015 Martin Mroz <martinmroz@gmail.com>
+ *  See LICENSE for additional information.
  */
 
 #include "action.h"
