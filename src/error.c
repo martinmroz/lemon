@@ -9,7 +9,7 @@
 
 #include "error.h"
 
-void LogMsgv(loglevel level, const char *filename, int lineno, const char *format, va_list ap)
+static void LogMsgv(loglevel level, const char *filename, int lineno, const char *format, va_list ap)
 {
     /* If an invalid log level is specified, default to error. */
     if (level >= LOGLEVEL_COUNT) {
