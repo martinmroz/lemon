@@ -7,6 +7,9 @@
  *  See LICENSE for additional information.
  */
 
+#ifndef __lemon_lemon_h__
+#define __lemon_lemon_h__
+
 #include <stdio.h>
 #include <stdarg.h>
 #include <string.h>
@@ -41,3 +44,5 @@ extern char **azDefine;  /* Name of the -D macros */
 #define LANG_CPP	1
 #define LANG_D		2
 extern int language;     /* Output language */
+
+#endif /* defined(__lemon_lemon_h__) */
