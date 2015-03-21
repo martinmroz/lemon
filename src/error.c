@@ -9,74 +9,45 @@
 
 #include "error.h"
 
-/*
- ** Code for printing error message.
- */
-
-/* Find a good place to break "msg" so that its length is at least "min"
- ** but no more than "max".  Make the point as close to max as possible.
- */
-static int findbreak(msg,min,max)
-char *msg;
-int min;
-int max;
+static void LogMsgv(loglevel level, const char *filename, int lineno, const char *format, va_list ap)
 {
-    int i,spot;
-    char c;
-    for(i=spot=min; i<=max; i++){
-        c = msg[i];
-        if( c=='\t' ) msg[i] = ' ';
-        if( c=='\n' ){ msg[i] = ' '; spot = i; break; }
-        if( c==0 ){ spot = i; break; }
-        if( c=='-' && i<max-1 ) spot = i+1;
-        if( c==' ' ) spot = i;
+    /* If an invalid log level is specified, default to error. */
+    if (level >= LOGLEVEL_COUNT) {
+        level = LOGLEVEL_ERROR;
     }
-    return spot;
-}
-
-/*
- ** The error message is split across multiple lines if necessary.  The
- ** splits occur at a space, if there is a space available near the end
- ** of the line.
- */
-#define ERRMSGSIZE  10000 /* Hope this is big enough.  No way to error check */
-#define LINEWIDTH      79 /* Max width of any output line */
-#define PREFIXLIMIT    30 /* Max width of the prefix on each line */
-void ErrorMsg(const char *filename, int lineno, const char *format, ...){
-    char errmsg[ERRMSGSIZE];
-    char prefix[PREFIXLIMIT+10];
-    int errmsgsize;
-    int prefixsize;
-    int availablewidth;
-    va_list ap;
-    int end, restart, base;
     
-    va_start(ap, format);
+    static char *const levelStrings[] = {
+        /* LOGLEVEL_INFO    */ "info",
+        /* LOGLEVEL_WARNING */ "warning",
+        /* LOGLEVEL_ERROR   */ "error",
+        /* LOGLEVEL_COUNT   */ NULL
+    };
+    
+    char *const levelString = levelStrings[(int)level];
+    
     /* Prepare a prefix to be prepended to every output line */
-    if( lineno>0 ){
-        sprintf(prefix,"%.*s:%d: ",PREFIXLIMIT-10,filename,lineno);
-    }else{
-        sprintf(prefix,"%.*s: ",PREFIXLIMIT-10,filename);
+    if (lineno > 0) {
+        fprintf(stdout, "%s:%d: %s: ", filename, lineno, levelString);
+    } else {
+        fprintf(stdout, "%s: %s: ", filename, levelString);
     }
-    prefixsize = (int)strlen(prefix);
-    availablewidth = LINEWIDTH - prefixsize;
     
     /* Generate the error message */
-    vsprintf(errmsg,format,ap);
+    vfprintf(stdout, format, ap);
+}
+
+void LogMsg(loglevel level, const char *filename, int lineno, const char *format, ...)
+{
+    va_list ap;
+    va_start(ap, format);
+    LogMsgv(level, filename, lineno, format, ap);
     va_end(ap);
-    errmsgsize = (int)strlen(errmsg);
-    /* Remove trailing '\n's from the error message. */
-    while( errmsgsize>0 && errmsg[errmsgsize-1]=='\n' ){
-        errmsg[--errmsgsize] = 0;
-    }
-    
-    /* Print the error message */
-    base = 0;
-    while( errmsg[base]!=0 ){
-        end = restart = findbreak(&errmsg[base],0,availablewidth);
-        restart += base;
-        while( errmsg[restart]==' ' ) restart++;
-        fprintf(stdout,"%s%.*s\n",prefix,end,&errmsg[base]);
-        base = restart;
-    }
+}
+
+void ErrorMsg(const char *filename, int lineno, const char *format, ...)
+{
+    va_list ap;
+    va_start(ap, format);
+    LogMsgv(LOGLEVEL_ERROR, filename, lineno, format, ap);
+    va_end(ap);
 }

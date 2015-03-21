@@ -12,6 +12,33 @@
 
 #include "lemon.h"
 
-void ErrorMsg(const char *, int, const char *, ...);
+enum {
+    LINENO_NONE = 0
+};
+
+typedef enum e_loglevel {
+    LOGLEVEL_INFO = 0,
+    LOGLEVEL_WARNING,
+    LOGLEVEL_ERROR,
+    LOGLEVEL_COUNT
+} loglevel;
+
+/**
+ * Report a message to standard output.
+ *
+ * @param filename The name of the input file.
+ * @param lineno The line number within the input file to which the message corresponds, or LINENO_NONE.
+ * @param format The printf-style format string for the error.
+ */
+void LogMsg(loglevel level, const char *filename, int lineno, const char *format, ...);
+
+/**
+ * Report an error message to standard output.
+ *
+ * @param filename The name of the input file.
+ * @param lineno The line number within the input file to which the error corresponds, or LINENO_NONE.
+ * @param format The printf-style format string for the error.
+ */
+void ErrorMsg(const char *filename, int lineno, const char *format, ...);
 
 #endif /* defined(__lemon_error_h__) */
