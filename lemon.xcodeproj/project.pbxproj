@@ -1,0 +1,321 @@
+// !$*UTF8*$!
+{
+	archiveVersion = 1;
+	classes = {
+	};
+	objectVersion = 46;
+	objects = {
+
+/* Begin PBXBuildFile section */
+		FD3D18061ABE00E6005BE139 /* build.c in Sources */ = {isa = PBXBuildFile; fileRef = FD3D18041ABE00E6005BE139 /* build.c */; };
+		FD3D18091ABE010B005BE139 /* configlist.c in Sources */ = {isa = PBXBuildFile; fileRef = FD3D18071ABE010B005BE139 /* configlist.c */; };
+		FD3D180C1ABE012C005BE139 /* error.c in Sources */ = {isa = PBXBuildFile; fileRef = FD3D180A1ABE012C005BE139 /* error.c */; };
+		FD3D180F1ABE0141005BE139 /* option.c in Sources */ = {isa = PBXBuildFile; fileRef = FD3D180D1ABE0141005BE139 /* option.c */; };
+		FD3D18121ABE015E005BE139 /* parse.c in Sources */ = {isa = PBXBuildFile; fileRef = FD3D18101ABE015E005BE139 /* parse.c */; };
+		FD3D18151ABE0173005BE139 /* plink.c in Sources */ = {isa = PBXBuildFile; fileRef = FD3D18131ABE0173005BE139 /* plink.c */; };
+		FD3D18181ABE0185005BE139 /* report.c in Sources */ = {isa = PBXBuildFile; fileRef = FD3D18161ABE0185005BE139 /* report.c */; };
+		FD3D181B1ABE0196005BE139 /* set.c in Sources */ = {isa = PBXBuildFile; fileRef = FD3D18191ABE0196005BE139 /* set.c */; };
+		FD3D18211ABE0201005BE139 /* table.c in Sources */ = {isa = PBXBuildFile; fileRef = FD3D181F1ABE0201005BE139 /* table.c */; };
+		FD3D18231ABE03B3005BE139 /* action.c in Sources */ = {isa = PBXBuildFile; fileRef = FD3D18221ABE03B3005BE139 /* action.c */; };
+		FD3D18261ABE06CC005BE139 /* main.c in Sources */ = {isa = PBXBuildFile; fileRef = FD3D18251ABE06CC005BE139 /* main.c */; };
+		FD3D18291ABE0922005BE139 /* msort.c in Sources */ = {isa = PBXBuildFile; fileRef = FD3D18271ABE0922005BE139 /* msort.c */; };
+/* End PBXBuildFile section */
+
+/* Begin PBXCopyFilesBuildPhase section */
+		FD3D17F81ABDFFEF005BE139 /* CopyFiles */ = {
+			isa = PBXCopyFilesBuildPhase;
+			buildActionMask = 2147483647;
+			dstPath = /usr/share/man/man1/;
+			dstSubfolderSpec = 0;
+			files = (
+			);
+			runOnlyForDeploymentPostprocessing = 1;
+		};
+/* End PBXCopyFilesBuildPhase section */
+
+/* Begin PBXFileReference section */
+		FD3D17FA1ABDFFEF005BE139 /* lemon */ = {isa = PBXFileReference; explicitFileType = "compiled.mach-o.executable"; includeInIndex = 0; path = lemon; sourceTree = BUILT_PRODUCTS_DIR; };
+		FD3D18041ABE00E6005BE139 /* build.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; path = build.c; sourceTree = "<group>"; };
+		FD3D18051ABE00E6005BE139 /* build.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = build.h; sourceTree = "<group>"; };
+		FD3D18071ABE010B005BE139 /* configlist.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; path = configlist.c; sourceTree = "<group>"; };
+		FD3D18081ABE010B005BE139 /* configlist.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = configlist.h; sourceTree = "<group>"; };
+		FD3D180A1ABE012C005BE139 /* error.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; path = error.c; sourceTree = "<group>"; };
+		FD3D180B1ABE012C005BE139 /* error.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = error.h; sourceTree = "<group>"; };
+		FD3D180D1ABE0141005BE139 /* option.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; path = option.c; sourceTree = "<group>"; };
+		FD3D180E1ABE0141005BE139 /* option.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = option.h; sourceTree = "<group>"; };
+		FD3D18101ABE015E005BE139 /* parse.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; path = parse.c; sourceTree = "<group>"; };
+		FD3D18111ABE015E005BE139 /* parse.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = parse.h; sourceTree = "<group>"; };
+		FD3D18131ABE0173005BE139 /* plink.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; path = plink.c; sourceTree = "<group>"; };
+		FD3D18141ABE0173005BE139 /* plink.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = plink.h; sourceTree = "<group>"; };
+		FD3D18161ABE0185005BE139 /* report.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; path = report.c; sourceTree = "<group>"; };
+		FD3D18171ABE0185005BE139 /* report.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = report.h; sourceTree = "<group>"; };
+		FD3D18191ABE0196005BE139 /* set.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; path = set.c; sourceTree = "<group>"; };
+		FD3D181A1ABE0196005BE139 /* set.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = set.h; sourceTree = "<group>"; };
+		FD3D181D1ABE01C0005BE139 /* struct.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = struct.h; sourceTree = "<group>"; };
+		FD3D181F1ABE0201005BE139 /* table.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; path = table.c; sourceTree = "<group>"; };
+		FD3D18201ABE0201005BE139 /* table.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = table.h; sourceTree = "<group>"; };
+		FD3D18221ABE03B3005BE139 /* action.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; path = action.c; sourceTree = "<group>"; };
+		FD3D18241ABE040E005BE139 /* lemon.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = lemon.h; sourceTree = "<group>"; };
+		FD3D18251ABE06CC005BE139 /* main.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; path = main.c; sourceTree = "<group>"; };
+		FD3D18271ABE0922005BE139 /* msort.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; path = msort.c; sourceTree = "<group>"; };
+		FD3D18281ABE0922005BE139 /* msort.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = msort.h; sourceTree = "<group>"; };
+		FD3D182B1ABE0C84005BE139 /* action.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = action.h; sourceTree = "<group>"; };
+/* End PBXFileReference section */
+
+/* Begin PBXFrameworksBuildPhase section */
+		FD3D17F71ABDFFEF005BE139 /* Frameworks */ = {
+			isa = PBXFrameworksBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+/* End PBXFrameworksBuildPhase section */
+
+/* Begin PBXGroup section */
+		FD3D17F11ABDFFEF005BE139 = {
+			isa = PBXGroup;
+			children = (
+				FD3D17FC1ABDFFEF005BE139 /* lemon */,
+				FD3D17FB1ABDFFEF005BE139 /* Products */,
+			);
+			sourceTree = "<group>";
+		};
+		FD3D17FB1ABDFFEF005BE139 /* Products */ = {
+			isa = PBXGroup;
+			children = (
+				FD3D17FA1ABDFFEF005BE139 /* lemon */,
+			);
+			name = Products;
+			sourceTree = "<group>";
+		};
+		FD3D17FC1ABDFFEF005BE139 /* lemon */ = {
+			isa = PBXGroup;
+			children = (
+				FD3D18241ABE040E005BE139 /* lemon.h */,
+				FD3D182A1ABE0C57005BE139 /* Source */,
+				FD3D18251ABE06CC005BE139 /* main.c */,
+			);
+			name = lemon;
+			path = src;
+			sourceTree = "<group>";
+		};
+		FD3D182A1ABE0C57005BE139 /* Source */ = {
+			isa = PBXGroup;
+			children = (
+				FD3D182B1ABE0C84005BE139 /* action.h */,
+				FD3D18221ABE03B3005BE139 /* action.c */,
+				FD3D18051ABE00E6005BE139 /* build.h */,
+				FD3D18041ABE00E6005BE139 /* build.c */,
+				FD3D18081ABE010B005BE139 /* configlist.h */,
+				FD3D18071ABE010B005BE139 /* configlist.c */,
+				FD3D180B1ABE012C005BE139 /* error.h */,
+				FD3D180A1ABE012C005BE139 /* error.c */,
+				FD3D18281ABE0922005BE139 /* msort.h */,
+				FD3D18271ABE0922005BE139 /* msort.c */,
+				FD3D180E1ABE0141005BE139 /* option.h */,
+				FD3D180D1ABE0141005BE139 /* option.c */,
+				FD3D18111ABE015E005BE139 /* parse.h */,
+				FD3D18101ABE015E005BE139 /* parse.c */,
+				FD3D18141ABE0173005BE139 /* plink.h */,
+				FD3D18131ABE0173005BE139 /* plink.c */,
+				FD3D18171ABE0185005BE139 /* report.h */,
+				FD3D18161ABE0185005BE139 /* report.c */,
+				FD3D181A1ABE0196005BE139 /* set.h */,
+				FD3D18191ABE0196005BE139 /* set.c */,
+				FD3D181D1ABE01C0005BE139 /* struct.h */,
+				FD3D18201ABE0201005BE139 /* table.h */,
+				FD3D181F1ABE0201005BE139 /* table.c */,
+			);
+			name = Source;
+			sourceTree = "<group>";
+		};
+/* End PBXGroup section */
+
+/* Begin PBXNativeTarget section */
+		FD3D17F91ABDFFEF005BE139 /* lemon */ = {
+			isa = PBXNativeTarget;
+			buildConfigurationList = FD3D18011ABDFFEF005BE139 /* Build configuration list for PBXNativeTarget "lemon" */;
+			buildPhases = (
+				FD3D17F61ABDFFEF005BE139 /* Sources */,
+				FD3D17F71ABDFFEF005BE139 /* Frameworks */,
+				FD3D17F81ABDFFEF005BE139 /* CopyFiles */,
+			);
+			buildRules = (
+			);
+			dependencies = (
+			);
+			name = lemon;
+			productName = lemon;
+			productReference = FD3D17FA1ABDFFEF005BE139 /* lemon */;
+			productType = "com.apple.product-type.tool";
+		};
+/* End PBXNativeTarget section */
+
+/* Begin PBXProject section */
+		FD3D17F21ABDFFEF005BE139 /* Project object */ = {
+			isa = PBXProject;
+			attributes = {
+				LastUpgradeCheck = 0610;
+				ORGANIZATIONNAME = "Martin Mroz";
+				TargetAttributes = {
+					FD3D17F91ABDFFEF005BE139 = {
+						CreatedOnToolsVersion = 6.1;
+					};
+				};
+			};
+			buildConfigurationList = FD3D17F51ABDFFEF005BE139 /* Build configuration list for PBXProject "lemon" */;
+			compatibilityVersion = "Xcode 3.2";
+			developmentRegion = English;
+			hasScannedForEncodings = 0;
+			knownRegions = (
+				en,
+			);
+			mainGroup = FD3D17F11ABDFFEF005BE139;
+			productRefGroup = FD3D17FB1ABDFFEF005BE139 /* Products */;
+			projectDirPath = "";
+			projectRoot = "";
+			targets = (
+				FD3D17F91ABDFFEF005BE139 /* lemon */,
+			);
+		};
+/* End PBXProject section */
+
+/* Begin PBXSourcesBuildPhase section */
+		FD3D17F61ABDFFEF005BE139 /* Sources */ = {
+			isa = PBXSourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				FD3D18211ABE0201005BE139 /* table.c in Sources */,
+				FD3D18151ABE0173005BE139 /* plink.c in Sources */,
+				FD3D180C1ABE012C005BE139 /* error.c in Sources */,
+				FD3D181B1ABE0196005BE139 /* set.c in Sources */,
+				FD3D18061ABE00E6005BE139 /* build.c in Sources */,
+				FD3D18181ABE0185005BE139 /* report.c in Sources */,
+				FD3D180F1ABE0141005BE139 /* option.c in Sources */,
+				FD3D18261ABE06CC005BE139 /* main.c in Sources */,
+				FD3D18091ABE010B005BE139 /* configlist.c in Sources */,
+				FD3D18231ABE03B3005BE139 /* action.c in Sources */,
+				FD3D18291ABE0922005BE139 /* msort.c in Sources */,
+				FD3D18121ABE015E005BE139 /* parse.c in Sources */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+/* End PBXSourcesBuildPhase section */
+
+/* Begin XCBuildConfiguration section */
+		FD3D17FF1ABDFFEF005BE139 /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ALWAYS_SEARCH_USER_PATHS = NO;
+				CLANG_CXX_LANGUAGE_STANDARD = "gnu++0x";
+				CLANG_CXX_LIBRARY = "libc++";
+				CLANG_ENABLE_MODULES = YES;
+				CLANG_ENABLE_OBJC_ARC = YES;
+				CLANG_WARN_BOOL_CONVERSION = YES;
+				CLANG_WARN_CONSTANT_CONVERSION = YES;
+				CLANG_WARN_DIRECT_OBJC_ISA_USAGE = YES_ERROR;
+				CLANG_WARN_EMPTY_BODY = YES;
+				CLANG_WARN_ENUM_CONVERSION = YES;
+				CLANG_WARN_INT_CONVERSION = YES;
+				CLANG_WARN_OBJC_ROOT_CLASS = YES_ERROR;
+				CLANG_WARN_UNREACHABLE_CODE = YES;
+				CLANG_WARN__DUPLICATE_METHOD_MATCH = YES;
+				COPY_PHASE_STRIP = NO;
+				ENABLE_STRICT_OBJC_MSGSEND = YES;
+				GCC_C_LANGUAGE_STANDARD = gnu99;
+				GCC_DYNAMIC_NO_PIC = NO;
+				GCC_OPTIMIZATION_LEVEL = 0;
+				GCC_PREPROCESSOR_DEFINITIONS = (
+					"DEBUG=1",
+					"$(inherited)",
+				);
+				GCC_SYMBOLS_PRIVATE_EXTERN = NO;
+				GCC_WARN_64_TO_32_BIT_CONVERSION = YES;
+				GCC_WARN_ABOUT_RETURN_TYPE = YES_ERROR;
+				GCC_WARN_UNDECLARED_SELECTOR = YES;
+				GCC_WARN_UNINITIALIZED_AUTOS = YES_AGGRESSIVE;
+				GCC_WARN_UNUSED_FUNCTION = YES;
+				GCC_WARN_UNUSED_VARIABLE = YES;
+				MACOSX_DEPLOYMENT_TARGET = 10.10;
+				MTL_ENABLE_DEBUG_INFO = YES;
+				ONLY_ACTIVE_ARCH = YES;
+				SDKROOT = macosx;
+			};
+			name = Debug;
+		};
+		FD3D18001ABDFFEF005BE139 /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ALWAYS_SEARCH_USER_PATHS = NO;
+				CLANG_CXX_LANGUAGE_STANDARD = "gnu++0x";
+				CLANG_CXX_LIBRARY = "libc++";
+				CLANG_ENABLE_MODULES = YES;
+				CLANG_ENABLE_OBJC_ARC = YES;
+				CLANG_WARN_BOOL_CONVERSION = YES;
+				CLANG_WARN_CONSTANT_CONVERSION = YES;
+				CLANG_WARN_DIRECT_OBJC_ISA_USAGE = YES_ERROR;
+				CLANG_WARN_EMPTY_BODY = YES;
+				CLANG_WARN_ENUM_CONVERSION = YES;
+				CLANG_WARN_INT_CONVERSION = YES;
+				CLANG_WARN_OBJC_ROOT_CLASS = YES_ERROR;
+				CLANG_WARN_UNREACHABLE_CODE = YES;
+				CLANG_WARN__DUPLICATE_METHOD_MATCH = YES;
+				COPY_PHASE_STRIP = YES;
+				DEBUG_INFORMATION_FORMAT = "dwarf-with-dsym";
+				ENABLE_NS_ASSERTIONS = NO;
+				ENABLE_STRICT_OBJC_MSGSEND = YES;
+				GCC_C_LANGUAGE_STANDARD = gnu99;
+				GCC_WARN_64_TO_32_BIT_CONVERSION = YES;
+				GCC_WARN_ABOUT_RETURN_TYPE = YES_ERROR;
+				GCC_WARN_UNDECLARED_SELECTOR = YES;
+				GCC_WARN_UNINITIALIZED_AUTOS = YES_AGGRESSIVE;
+				GCC_WARN_UNUSED_FUNCTION = YES;
+				GCC_WARN_UNUSED_VARIABLE = YES;
+				MACOSX_DEPLOYMENT_TARGET = 10.10;
+				MTL_ENABLE_DEBUG_INFO = NO;
+				SDKROOT = macosx;
+			};
+			name = Release;
+		};
+		FD3D18021ABDFFEF005BE139 /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ARCHS = "$(ARCHS_STANDARD_32_BIT)";
+				PRODUCT_NAME = "$(TARGET_NAME)";
+			};
+			name = Debug;
+		};
+		FD3D18031ABDFFEF005BE139 /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ARCHS = "$(ARCHS_STANDARD_32_BIT)";
+				PRODUCT_NAME = "$(TARGET_NAME)";
+			};
+			name = Release;
+		};
+/* End XCBuildConfiguration section */
+
+/* Begin XCConfigurationList section */
+		FD3D17F51ABDFFEF005BE139 /* Build configuration list for PBXProject "lemon" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				FD3D17FF1ABDFFEF005BE139 /* Debug */,
+				FD3D18001ABDFFEF005BE139 /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
+		};
+		FD3D18011ABDFFEF005BE139 /* Build configuration list for PBXNativeTarget "lemon" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				FD3D18021ABDFFEF005BE139 /* Debug */,
+				FD3D18031ABDFFEF005BE139 /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
+		};
+/* End XCConfigurationList section */
+	};
+	rootObject = FD3D17F21ABDFFEF005BE139 /* Project object */;
+}
