@@ -30,35 +30,35 @@
 
 char *Strsafe();
 
-void Strsafe_init(/* void */);
-int Strsafe_insert(/* char * */);
-char *Strsafe_find(/* char * */);
+void Strsafe_init(void);
+int Strsafe_insert(char *);
+char *Strsafe_find(char *);
 
 /* Routines for handling symbols of the grammar */
 
 struct symbol *Symbol_new();
-int Symbolcmpp(/* struct symbol **, struct symbol ** */);
-void Symbol_init(/* void */);
-int Symbol_insert(/* struct symbol *, char * */);
-struct symbol *Symbol_find(/* char * */);
-struct symbol *Symbol_Nth(/* int */);
-int Symbol_count(/*  */);
-struct symbol **Symbol_arrayof(/*  */);
+int Symbolcmpp(struct symbol **, struct symbol **);
+void Symbol_init(void);
+int Symbol_insert(struct symbol *, char *);
+struct symbol *Symbol_find(char *);
+struct symbol *Symbol_Nth(int);
+int Symbol_count(void);
+struct symbol **Symbol_arrayof(void);
 
 /* Routines to manage the state table */
 
-int Configcmp(/* struct config *, struct config * */);
-struct state *State_new();
-void State_init(/* void */);
-int State_insert(/* struct state *, struct config * */);
-struct state *State_find(/* struct config * */);
-struct state **State_arrayof(/*  */);
+int Configcmp(struct config *, struct config *);
+struct state *State_new(void);
+void State_init(void);
+int State_insert(struct state *, struct config *);
+struct state *State_find(struct config *);
+struct state **State_arrayof(void);
 
 /* Routines used for efficiency in Configlist_add */
 
-void Configtable_init(/* void */);
-int Configtable_insert(/* struct config * */);
-struct config *Configtable_find(/* struct config * */);
-void Configtable_clear(/* int(*)(struct config *) */);
+void Configtable_init(void);
+int Configtable_insert(struct config *);
+struct config *Configtable_find(struct config *);
+void Configtable_clear(int(*)(struct config *));
 
 #endif /* defined(__lemon_table_h__) */

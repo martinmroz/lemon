@@ -37,9 +37,7 @@ struct plink *Plink_new(){
 }
 
 /* Add a plink to a plink list */
-void Plink_add(plpp,cfp)
-struct plink **plpp;
-struct config *cfp;
+void Plink_add(struct plink **plpp, struct config *cfp)
 {
     struct plink *new;
     new = Plink_new();
@@ -49,9 +47,7 @@ struct config *cfp;
 }
 
 /* Transfer every plink on the list "from" to the list "to" */
-void Plink_copy(to,from)
-struct plink **to;
-struct plink *from;
+void Plink_copy(struct plink **to, struct plink *from)
 {
     struct plink *nextpl;
     while( from ){
@@ -63,8 +59,7 @@ struct plink *from;
 }
 
 /* Delete every plink on the list */
-void Plink_delete(plp)
-struct plink *plp;
+void Plink_delete(struct plink *plp)
 {
     struct plink *nextpl;
     

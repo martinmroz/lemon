@@ -107,7 +107,7 @@ static char *merge(
 char *msort(
             char *list,
             char **next,
-            int (*cmp)(const char*,const char*)
+            msort_comparator cmp
             ){
     ptrdiff_t offset;
     char *ep;

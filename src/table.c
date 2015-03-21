@@ -21,8 +21,7 @@
  ** Code for processing tables in the LEMON parser generator.
  */
 
-PRIVATE int strhash(x)
-char *x;
+PRIVATE int strhash(char *x)
 {
     int h = 0;
     while( *x) h = h*13 + *(x++);
@@ -33,8 +32,7 @@ char *x;
  ** keep strings in a table so that the same string is not in more
  ** than one place.
  */
-char *Strsafe(y)
-char *y;
+char *Strsafe(char *y)
 {
     char *z;
     
@@ -93,8 +91,7 @@ void Strsafe_init(){
 }
 /* Insert a new record into the array.  Return TRUE if successful.
  ** Prior data with the same key is NOT overwritten */
-int Strsafe_insert(data)
-char *data;
+int Strsafe_insert(char *data)
 {
     x1node *np;
     int h;
@@ -150,8 +147,7 @@ char *data;
 
 /* Return a pointer to data assigned to the given key.  Return NULL
  ** if no such key. */
-char *Strsafe_find(key)
-char *key;
+char *Strsafe_find(char *key)
 {
     int h;
     x1node *np;
@@ -169,8 +165,7 @@ char *key;
 /* Return a pointer to the (terminal or nonterminal) symbol "x".
  ** Create a new symbol if this is the first time "x" has been seen.
  */
-struct symbol *Symbol_new(x)
-char *x;
+struct symbol *Symbol_new(char *x)
 {
     struct symbol *sp;
     
@@ -257,9 +252,7 @@ void Symbol_init(){
 }
 /* Insert a new record into the array.  Return TRUE if successful.
  ** Prior data with the same key is NOT overwritten */
-int Symbol_insert(data,key)
-struct symbol *data;
-char *key;
+int Symbol_insert(struct symbol *data, char *key)
 {
     x2node *np;
     int h;
@@ -317,8 +310,7 @@ char *key;
 
 /* Return a pointer to data assigned to the given key.  Return NULL
  ** if no such key. */
-struct symbol *Symbol_find(key)
-char *key;
+struct symbol *Symbol_find(char *key)
 {
     int h;
     x2node *np;
@@ -334,8 +326,7 @@ char *key;
 }
 
 /* Return the n-th data.  Return NULL if n is out of range. */
-struct symbol *Symbol_Nth(n)
-int n;
+struct symbol *Symbol_Nth(int n)
 {
     struct symbol *data;
     if( x2a && n>0 && n<=x2a->count ){
@@ -369,9 +360,7 @@ struct symbol **Symbol_arrayof()
 }
 
 /* Compare two configurations */
-int Configcmp(a,b)
-struct config *a;
-struct config *b;
+int Configcmp(struct config *a, struct config *b)
 {
     int x;
     x = a->rp->index - b->rp->index;
@@ -380,9 +369,7 @@ struct config *b;
 }
 
 /* Compare two states */
-PRIVATE int statecmp(a,b)
-struct config *a;
-struct config *b;
+PRIVATE int statecmp(struct config *a, struct config *b)
 {
     int rc;
     for(rc=0; rc==0 && a && b;  a=a->bp, b=b->bp){
@@ -397,8 +384,7 @@ struct config *b;
 }
 
 /* Hash a state */
-PRIVATE int statehash(a)
-struct config *a;
+PRIVATE int statehash(struct config *a)
 {
     int h=0;
     while( a ){
@@ -463,9 +449,7 @@ void State_init(){
 }
 /* Insert a new record into the array.  Return TRUE if successful.
  ** Prior data with the same key is NOT overwritten */
-int State_insert(data,key)
-struct state *data;
-struct config *key;
+int State_insert(struct state *data, struct config *key)
 {
     x3node *np;
     int h;
@@ -523,8 +507,7 @@ struct config *key;
 
 /* Return a pointer to data assigned to the given key.  Return NULL
  ** if no such key. */
-struct state *State_find(key)
-struct config *key;
+struct state *State_find(struct config *key)
 {
     int h;
     x3node *np;
@@ -556,8 +539,7 @@ struct state **State_arrayof()
 }
 
 /* Hash a configuration */
-PRIVATE int confighash(a)
-struct config *a;
+PRIVATE int confighash(struct config *a)
 {
     int h=0;
     h = h*571 + a->rp->index*37 + a->dot;
@@ -609,8 +591,7 @@ void Configtable_init(){
 }
 /* Insert a new record into the array.  Return TRUE if successful.
  ** Prior data with the same key is NOT overwritten */
-int Configtable_insert(data)
-struct config *data;
+int Configtable_insert(struct config *data)
 {
     x4node *np;
     int h;
@@ -666,8 +647,7 @@ struct config *data;
 
 /* Return a pointer to data assigned to the given key.  Return NULL
  ** if no such key. */
-struct config *Configtable_find(key)
-struct config *key;
+struct config *Configtable_find(struct config *key)
 {
     int h;
     x4node *np;
@@ -684,8 +664,7 @@ struct config *key;
 
 /* Remove all data from the table.  Pass each data to the function "f"
  ** as it is removed.  ("f" may be null to avoid this step.) */
-void Configtable_clear(f)
-int(*f)(/* struct config * */);
+void Configtable_clear(int(*f)(/* struct config * */))
 {
     int i;
     if( x4a==0 || x4a->count==0 ) return;
