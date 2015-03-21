@@ -50,7 +50,7 @@ PRIVATE FILE *file_open(struct lemon *lemp, char *suffix, char *mode)
         lemp->outname = file_makename(lemp, suffix);
         fp = fopen(lemp->outname,mode);
         if( fp==0 && *mode=='w' ){
-            fprintf(stderr,"Can't open file \"%s\".\n",lemp->outname);
+            ErrorMsg(lemp->filename, LINENO_NONE, "Can't open file \"%s\".\n",lemp->outname);
             lemp->errorcnt++;
             return 0;
         }
