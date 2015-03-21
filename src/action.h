@@ -1,10 +1,7 @@
-//
-//  action.h
-//  lemon
-//
-//  Created by Martin Mroz on 3/21/15.
-//  Copyright (c) 2015 Martin Mroz. All rights reserved.
-//
+/*
+ *  Created by Martin Mroz on 3/21/15.
+ *  Copyright (c) 2015 Martin Mroz. All rights reserved.
+ */
 
 #ifndef __lemon_action_h__
 #define __lemon_action_h__
@@ -33,15 +30,6 @@ struct acttab {
     int nLookaheadAlloc;         /* Slots allocated in aLookahead[] */
 };
 
-/* Return the number of entries in the yy_action table */
-#define acttab_size(X) ((X)->nAction)
-
-/* The value for the N-th entry in yy_action */
-#define acttab_yyaction(X,N)  ((X)->aAction[N].action)
-
-/* The value for the N-th entry in yy_lookahead */
-#define acttab_yylookahead(X,N)  ((X)->aAction[N].lookahead)
-
 /* Allocate a new parser action */
 struct action *Action_new(void);
 
@@ -51,12 +39,31 @@ struct action *Action_sort(struct action *ap);
 /* Adds a new parser action to the table. */
 void Action_add(struct action **app, enum e_action type, struct symbol *sp, char *arg);
 
-void acttab_free(acttab *p);
+/* Return the number of entries in the yy_action table */
+#define acttab_size(X) ((X)->nAction)
 
+/* The value for the N-th entry in yy_action */
+#define acttab_yyaction(X,N)  ((X)->aAction[N].action)
+
+/* The value for the N-th entry in yy_lookahead */
+#define acttab_yylookahead(X,N)  ((X)->aAction[N].lookahead)
+
+/* Allocates a new action table */
 acttab *acttab_alloc(void);
 
+/* Free all memory associated with the given acttab */
+void acttab_free(acttab *p);
+
+/* Add a new action to the current transaction set */
 void acttab_action(acttab *p, int lookahead, int action);
 
+/*
+ ** Add the transaction set built up with prior calls to acttab_action()
+ ** into the current action table.  Then reset the transaction set back
+ ** to an empty set in preparation for a new round of acttab_action() calls.
+ **
+ ** Return the offset into the action table of the new transaction.
+ */
 int acttab_insert(acttab *p);
 
 #endif /* __lemon_action_h__ */

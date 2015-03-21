@@ -1,10 +1,7 @@
-//
-//  msort.h
-//  lemon
-//
-//  Created by Martin Mroz on 3/21/15.
-//  Copyright (c) 2015 Martin Mroz. All rights reserved.
-//
+/*
+ *  Created by Martin Mroz on 3/21/15.
+ *  Copyright (c) 2015 Martin Mroz. All rights reserved.
+ */
 
 #ifndef __lemon_msort_h__
 #define __lemon_msort_h__

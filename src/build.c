@@ -1,10 +1,7 @@
-//
-//  build.c
-//  lemon
-//
-//  Created by Martin Mroz on 3/21/15.
-//  Copyright (c) 2015 Martin Mroz. All rights reserved.
-//
+/*
+ *  Created by Martin Mroz on 3/21/15.
+ *  Copyright (c) 2015 Martin Mroz. All rights reserved.
+ */
 
 #include "build.h"
 
@@ -16,7 +13,6 @@
 #include "struct.h"
 #include "table.h"
 
-/********************** From the file "build.c" *****************************/
 /*
  ** Routines to construction the finite state machine for the LEMON
  ** parser generator.

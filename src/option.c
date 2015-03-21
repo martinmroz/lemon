@@ -1,14 +1,10 @@
-//
-//  option.c
-//  lemon
-//
-//  Created by Martin Mroz on 3/21/15.
-//  Copyright (c) 2015 Martin Mroz. All rights reserved.
-//
+/*
+ *  Created by Martin Mroz on 3/21/15.
+ *  Copyright (c) 2015 Martin Mroz. All rights reserved.
+ */
 
 #include "option.h"
 
-/************************ From the file "option.c" **************************/
 static char **argv;
 static struct s_options *op;
 static FILE *errstream;

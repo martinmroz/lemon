@@ -1,14 +1,10 @@
-//
-//  table.c
-//  lemon
-//
-//  Created by Martin Mroz on 3/21/15.
-//  Copyright (c) 2015 Martin Mroz. All rights reserved.
-//
+/*
+ *  Created by Martin Mroz on 3/21/15.
+ *  Copyright (c) 2015 Martin Mroz. All rights reserved.
+ */
 
 #include "table.h"
 
-/********************** From the file "table.c" ****************************/
 /*
  ** All code in this file has been automatically generated
  ** from a specification in the file

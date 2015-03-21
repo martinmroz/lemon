@@ -1,10 +1,7 @@
-//
-//  configlist.c
-//  lemon
-//
-//  Created by Martin Mroz on 3/21/15.
-//  Copyright (c) 2015 Martin Mroz. All rights reserved.
-//
+/*
+ *  Created by Martin Mroz on 3/21/15.
+ *  Copyright (c) 2015 Martin Mroz. All rights reserved.
+ */
 
 #include "configlist.h"
 
@@ -14,7 +11,6 @@
 #include "set.h"
 #include "table.h"
 
-/********************* From the file "configlist.c" *************************/
 /*
  ** Routines to processing a configuration list and building a state
  ** in the LEMON parser generator.

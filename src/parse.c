@@ -1,17 +1,13 @@
-//
-//  parse.c
-//  lemon
-//
-//  Created by Martin Mroz on 3/21/15.
-//  Copyright (c) 2015 Martin Mroz. All rights reserved.
-//
+/*
+ *  Created by Martin Mroz on 3/21/15.
+ *  Copyright (c) 2015 Martin Mroz. All rights reserved.
+ */
 
 #include "parse.h"
 
 #include "error.h"
 #include "table.h"
 
-/*********************** From the file "parse.c" ****************************/
 /*
  ** Input file parser for the LEMON parser generator.
  */

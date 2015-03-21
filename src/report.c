@@ -1,10 +1,7 @@
-//
-//  report.c
-//  lemon
-//
-//  Created by Martin Mroz on 3/21/15.
-//  Copyright (c) 2015 Martin Mroz. All rights reserved.
-//
+/*
+ *  Created by Martin Mroz on 3/21/15.
+ *  Copyright (c) 2015 Martin Mroz. All rights reserved.
+ */
 
 #include "report.h"
 
@@ -14,7 +11,6 @@
 #include "struct.h"
 #include "table.h"
 
-/*********************** From the file "report.c" **************************/
 /*
  ** Procedures for generating reports and tables in the LEMON parser generator.
  */

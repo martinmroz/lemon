@@ -1,10 +1,7 @@
-//
-//  configlist.h
-//  lemon
-//
-//  Created by Martin Mroz on 3/21/15.
-//  Copyright (c) 2015 Martin Mroz. All rights reserved.
-//
+/*
+ *  Created by Martin Mroz on 3/21/15.
+ *  Copyright (c) 2015 Martin Mroz. All rights reserved.
+ */
 
 #ifndef __lemon_configlist_h__
 #define __lemon_configlist_h__
@@ -13,7 +10,6 @@
 
 #include "struct.h"
 
-/********* From the file "configlist.h" *********************************/
 void Configlist_init(/* void */);
 struct config *Configlist_add(/* struct rule *, int */);
 struct config *Configlist_addbasis(/* struct rule *, int */);

@@ -1,14 +1,10 @@
-//
-//  set.c
-//  lemon
-//
-//  Created by Martin Mroz on 3/21/15.
-//  Copyright (c) 2015 Martin Mroz. All rights reserved.
-//
+/*
+ *  Created by Martin Mroz on 3/21/15.
+ *  Copyright (c) 2015 Martin Mroz. All rights reserved.
+ */
 
 #include "set.h"
 
-/***************** From the file "set.c" ************************************/
 /*
  ** Set manipulation routines for the LEMON parser generator.
  */

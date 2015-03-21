@@ -1,17 +1,13 @@
-//
-//  action.c
-//  lemon
-//
-//  Created by Martin Mroz on 3/21/15.
-//  Copyright (c) 2015 Martin Mroz. All rights reserved.
-//
+/*
+ *  Created by Martin Mroz on 3/21/15.
+ *  Copyright (c) 2015 Martin Mroz. All rights reserved.
+ */
 
 #include "action.h"
 
 #include "struct.h"
 #include "msort.h"
 
-/****************** From the file "action.c" *******************************/
 /*
  ** Routines processing parser actions in the LEMON parser generator.
  */

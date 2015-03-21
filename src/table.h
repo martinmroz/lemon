@@ -1,10 +1,7 @@
-//
-//  table.h
-//  lemon
-//
-//  Created by Martin Mroz on 3/21/15.
-//  Copyright (c) 2015 Martin Mroz. All rights reserved.
-//
+/*
+ *  Created by Martin Mroz on 3/21/15.
+ *  Copyright (c) 2015 Martin Mroz. All rights reserved.
+ */
 
 #ifndef __lemon_table_h__
 #define __lemon_table_h__
@@ -13,7 +10,6 @@
 
 #include "struct.h"
 
-/**************** From the file "table.h" *********************************/
 /*
  ** All code in this file has been automatically generated
  ** from a specification in the file

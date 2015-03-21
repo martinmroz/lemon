@@ -1,10 +1,7 @@
-//
-//  plink.h
-//  lemon
-//
-//  Created by Martin Mroz on 3/21/15.
-//  Copyright (c) 2015 Martin Mroz. All rights reserved.
-//
+/*
+ *  Created by Martin Mroz on 3/21/15.
+ *  Copyright (c) 2015 Martin Mroz. All rights reserved.
+ */
 
 #ifndef __lemon_plink_h__
 #define __lemon_plink_h__
@@ -13,7 +10,6 @@
 
 #include "struct.h"
 
-/********* From the file "plink.h" ***************************************/
 struct plink *Plink_new(/* void */);
 void Plink_add(/* struct plink **, struct config * */);
 void Plink_copy(/* struct plink **, struct plink * */);
