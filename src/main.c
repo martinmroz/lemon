@@ -10,11 +10,12 @@
 #include "lemon.h"
 
 #include "build.h"
+#include "error.h"
 #include "option.h"
-#include "struct.h"
 #include "parse.h"
 #include "report.h"
 #include "set.h"
+#include "struct.h"
 #include "table.h"
 
 /*
@@ -41,14 +42,12 @@ static void handle_D_option(char *z){
     nDefine++;
     azDefine = realloc(azDefine, sizeof(azDefine[0])*nDefine);
     if( azDefine==0 ){
-        fprintf(stderr,"out of memory\n");
-        exit(1);
+        memory_error();
     }
     paz = &azDefine[nDefine-1];
     *paz = malloc( strlen(z)+1 );
     if( *paz==0 ){
-        fprintf(stderr,"out of memory\n");
-        exit(1);
+        memory_error();
     }
     strcpy(*paz, z);
     for(z=*paz; *z && *z!='='; z++){}
@@ -103,7 +102,7 @@ int main(int argc, char **argv)
         exit(0);
     }
     if( OptNArgs()!=1 ){
-        fprintf(stderr,"Exactly one filename argument is required.\n");
+        ErrorMsg("lemon", LINENO_NONE, "Exactly one filename argument is required.\n");
         exit(1);
     }
     memset(&lem, 0, sizeof(lem));
@@ -124,7 +123,7 @@ int main(int argc, char **argv)
     Parse(&lem);
     if( lem.errorcnt ) exit(lem.errorcnt);
         if( lem.nrule==0 ){
-            fprintf(stderr,"Empty grammar.\n");
+            ErrorMsg(lem.filename, LINENO_NONE, "Empty grammar.\n");
             exit(1);
         }
     
@@ -188,13 +187,15 @@ int main(int argc, char **argv)
             ReportHeader(&lem);
     }
     if( statistics ){
-        printf("Parser statistics: %d terminals, %d nonterminals, %d rules\n",
+        LogMsg(LOGLEVEL_INFO, lem.filename, LINENO_NONE,
+               "Parser statistics: %d terminals, %d nonterminals, %d rules\n",
                lem.nterminal, lem.nsymbol - lem.nterminal, lem.nrule);
-        printf("                   %d states, %d parser table entries, %d conflicts\n",
+        LogMsg(LOGLEVEL_INFO, lem.filename, LINENO_NONE,
+               "                   %d states, %d parser table entries, %d conflicts\n",
                lem.nstate, lem.tablesize, lem.nconflict);
     }
     if( lem.nconflict ){
-        fprintf(stderr,"%d parsing conflicts.\n",lem.nconflict);
+        LogMsg(LOGLEVEL_WARNING, lem.filename, LINENO_NONE, "%d parsing conflicts.\n", lem.nconflict);
     }
     exit(lem.errorcnt + lem.nconflict);
     return (lem.errorcnt + lem.nconflict);
