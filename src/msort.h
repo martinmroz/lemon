@@ -12,23 +12,25 @@
 
 #include "lemon.h"
 
-/*
- ** Inputs:
- **   list:      Pointer to a singly-linked list of structures.
- **   next:      Pointer to pointer to the second element of the list.
- **   cmp:       A comparison function.
- **
- ** Return Value:
- **   A pointer to the head of a sorted list containing the elements
- **   orginally in list.
- **
- ** Side effects:
- **   The "next" pointers for elements in list are changed.
+typedef int (*msort_comparator)(const char *, const char *);
+
+/**
+ * Inputs:
+ *   list:      Pointer to a singly-linked list of structures.
+ *   next:      Pointer to pointer to the second element of the list.
+ *   cmp:       A comparison function.
+ *
+ * Return Value:
+ *   A pointer to the head of a sorted list containing the elements
+ *   orginally in list.
+ *
+ * Side effects:
+ *   The "next" pointers for elements in list are changed.
  */
 char *msort(
             char *list,
             char **next,
-            int (*cmp)(const char*,const char*)
+            msort_comparator
             );
 
 #endif /* defined(__lemon_msort_h__) */

@@ -16,8 +16,7 @@
 static int size = 0;
 
 /* Set the set size */
-void SetSize(n)
-int n;
+void SetSize(int n)
 {
     size = n+1;
 }
@@ -34,17 +33,14 @@ char *SetNew(){
 }
 
 /* Deallocate a set */
-void SetFree(s)
-char *s;
+void SetFree(char *s)
 {
     free(s);
 }
 
 /* Add a new element to the set.  Return TRUE if the element was added
  ** and FALSE if it was already there. */
-int SetAdd(s,e)
-char *s;
-int e;
+int SetAdd(char *s, int e)
 {
     int rv;
     assert( e>=0 && e<size );
@@ -54,9 +50,7 @@ int e;
 }
 
 /* Add every element of s2 to s1.  Return TRUE if s1 changes. */
-int SetUnion(s1,s2)
-char *s1;
-char *s2;
+int SetUnion(char *s1, char *s2)
 {
     int i, progress;
     progress = 0;

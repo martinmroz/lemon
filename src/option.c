@@ -19,10 +19,7 @@ static FILE *errstream;
  ** Print the command line with a carrot pointing to the k-th character
  ** of the n-th field.
  */
-static void errline(n,k,err)
-int n;
-size_t k;
-FILE *err;
+static void errline(int n, size_t k, FILE *err)
 {
     int spcnt, i;
     if( argv[0] ) fprintf(err,"%s",argv[0]);
@@ -44,8 +41,7 @@ FILE *err;
  ** Return the index of the N-th non-switch argument.  Return -1
  ** if N is out of range.
  */
-static int argindex(n)
-int n;
+static int argindex(int n)
 {
     int i;
     int dashdash = 0;
@@ -66,9 +62,7 @@ static char emsg[] = "Command line syntax error: ";
 /*
  ** Process a flag command line argument.
  */
-static int handleflags(i,err)
-int i;
-FILE *err;
+static int handleflags(int i, FILE* err)
 {
     int v;
     int errcnt = 0;
@@ -102,9 +96,7 @@ FILE *err;
 /*
  ** Process a command line switch which has an argument.
  */
-static int handleswitch(i,err)
-int i;
-FILE *err;
+static int handleswitch(int i, FILE *err)
 {
     int lv = 0;
     double dv = 0.0;
@@ -190,10 +182,7 @@ FILE *err;
     return errcnt;
 }
 
-int OptInit(a,o,err)
-char **a;
-struct s_options *o;
-FILE *err;
+int OptInit(char **a, struct s_options *o, FILE *err)
 {
     int errcnt = 0;
     argv = a;
@@ -230,16 +219,14 @@ int OptNArgs(){
     return cnt;
 }
 
-char *OptArg(n)
-int n;
+char *OptArg(int n)
 {
     int i;
     i = argindex(n);
     return i>=0 ? argv[i] : 0;
 }
 
-void OptErr(n)
-int n;
+void OptErr(int n)
 {
     int i;
     i = argindex(n);
