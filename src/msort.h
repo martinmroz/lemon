@@ -27,10 +27,6 @@ typedef int (*msort_comparator)(const char *, const char *);
  * Side effects:
  *   The "next" pointers for elements in list are changed.
  */
-char *msort(
-            char *list,
-            char **next,
-            msort_comparator
-            );
+char *msort(char *list, char **next, msort_comparator);
 
 #endif /* defined(__lemon_msort_h__) */

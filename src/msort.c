@@ -52,12 +52,7 @@
  **   The "next" pointers for elements in the lists a and b are
  **   changed.
  */
-static char *merge(
-                   char *a,
-                   char *b,
-                   int (*cmp)(const char*,const char*),
-                   ptrdiff_t offset
-                   ){
+static char *merge(char *a, char *b, msort_comparator cmp, ptrdiff_t offset){
     char *ptr, *head;
     
     if( a==0 ){
@@ -104,11 +99,7 @@ static char *merge(
  **   The "next" pointers for elements in list are changed.
  */
 #define LISTSIZE 30
-char *msort(
-            char *list,
-            char **next,
-            msort_comparator cmp
-            ){
+char *msort(char *list, char **next, msort_comparator cmp){
     ptrdiff_t offset;
     char *ep;
     char *set[LISTSIZE];
