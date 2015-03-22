@@ -29,7 +29,7 @@ PRIVATE char *file_makename(struct lemon *lemp, char *suffix)
     
     name = malloc( strlen(lemp->filename) + strlen(suffix) + 5 );
     if( name==0 ){
-        fprintf(stderr,"Can't allocate space for a filename.\n");
+        ErrorMsg("lemon", LINENO_NONE, "Can't allocate space for a filename.\n");
         exit(1);
     }
     strcpy(name,lemp->filename);
@@ -380,14 +380,13 @@ PRIVATE FILE *tplt_open(struct lemon *lemp)
         tpltname = pathsearch(lemp->argv0,templatename,0);
     }
     if( tpltname==0 ){
-        fprintf(stderr,"Can't find the parser driver template file \"%s\".\n",
-                templatename);
+        ErrorMsg(lemp->filename, LINENO_NONE, "Can't find the parser driver template file \"%s\".\n", templatename);
         lemp->errorcnt++;
         return 0;
     }
     in = fopen(tpltname,"rb");
     if( in==0 ){
-        fprintf(stderr,"Can't open the template file \"%s\".\n",templatename);
+        ErrorMsg(lemp->filename, LINENO_NONE, "Can't open the template file \"%s\".\n",templatename);
         lemp->errorcnt++;
         return 0;
     }
@@ -685,7 +684,7 @@ void print_stack_union(
     }
     stddt = (char*)malloc( maxdtlength*2 + 1 );
     if( types==0 || stddt==0 ){
-        fprintf(stderr,"Out of memory.\n");
+        ErrorMsg("lemon", LINENO_NONE, "Out of memory.\n");
         exit(1);
     }
     
@@ -730,7 +729,7 @@ void print_stack_union(
             sp->dtnum = hash + 1;
             types[hash] = (char*)malloc( strlen(stddt)+1 );
             if( types[hash]==0 ){
-                fprintf(stderr,"Out of memory.\n");
+                ErrorMsg("lemon", LINENO_NONE, "Out of memory.\n");
                 exit(1);
             }
             strcpy(types[hash],stddt);

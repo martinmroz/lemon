@@ -9,6 +9,7 @@
 
 #include "action.h"
 
+#include "error.h"
 #include "struct.h"
 #include "msort.h"
 
@@ -26,7 +27,7 @@ struct action *Action_new(void){
         int amt = 100;
         freelist = (struct action *)calloc(amt, sizeof(struct action));
         if( freelist==0 ){
-            fprintf(stderr,"Unable to allocate memory for a new parser action.");
+            ErrorMsg("lemon", LINENO_NONE, "Unable to allocate memory for a new parser action.");
             exit(1);
         }
         for(i=0; i<amt-1; i++) freelist[i].next = &freelist[i+1];
@@ -90,7 +91,7 @@ void acttab_free(acttab *p){
 acttab *acttab_alloc(void){
     acttab *p = calloc( 1, sizeof(*p) );
     if( p==0 ){
-        fprintf(stderr,"Unable to allocate memory for a new acttab.");
+        ErrorMsg("lemon", LINENO_NONE, "Unable to allocate memory for a new acttab.");
         exit(1);
     }
     memset(p, 0, sizeof(*p));
@@ -105,7 +106,7 @@ void acttab_action(acttab *p, int lookahead, int action) {
         p->aLookahead = realloc( p->aLookahead,
                                 sizeof(p->aLookahead[0])*p->nLookaheadAlloc );
         if( p->aLookahead==0 ){
-            fprintf(stderr,"malloc failed\n");
+            ErrorMsg("lemon", LINENO_NONE, "malloc failed\n");
             exit(1);
         }
     }
@@ -147,7 +148,7 @@ int acttab_insert(acttab *p){
         p->aAction = realloc( p->aAction,
                              sizeof(p->aAction[0])*p->nActionAlloc);
         if( p->aAction==0 ){
-            fprintf(stderr,"malloc failed\n");
+            ErrorMsg("lemon", LINENO_NONE, "malloc failed\n");
             exit(1);
         }
         for(i=oldAlloc; i<p->nActionAlloc; i++){

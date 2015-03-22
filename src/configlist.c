@@ -34,7 +34,7 @@ PRIVATE struct config *newconfig(){
         int amt = 3;
         freelist = (struct config *)calloc( amt, sizeof(struct config) );
         if( freelist==0 ){
-            fprintf(stderr,"Unable to allocate memory for a new configuration.");
+            ErrorMsg("lemon", LINENO_NONE, "Unable to allocate memory for a new configuration.");
             exit(1);
         }
         for(i=0; i<amt-1; i++) freelist[i].next = &freelist[i+1];

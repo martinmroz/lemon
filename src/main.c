@@ -26,7 +26,7 @@
  ** is used mostly by the "MemoryCheck" macro in struct.h
  */
 void memory_error(){
-    fprintf(stderr,"Out of memory.  Aborting...\n");
+    ErrorMsg("lemon", LINENO_NONE, "Out of memory.  Aborting...\n");
     exit(1);
 }
 
