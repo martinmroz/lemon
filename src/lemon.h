@@ -43,6 +43,7 @@ extern char **azDefine;  /* Name of the -D macros */
 #define LANG_C		0
 #define LANG_CPP	1
 #define LANG_D		2
+#define LANG_RUST   3
 extern int language;     /* Output language */
 
 #endif /* defined(__lemon_lemon_h__) */

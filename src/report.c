@@ -353,43 +353,52 @@ PRIVATE FILE *tplt_open(struct lemon *lemp)
     static char templatename_c[] = "/usr/local/share/lemon/skeleton.c";
     static char templatename_cpp[] = "/usr/local/share/lemon/skeleton.cc";
     static char templatename_d[] = "/usr/local/share/lemon/skeleton.d";
-    char *templatename;
-    char buf[1000];
-    FILE *in;
-    char *tpltname;
-    char *cp;
+    static char templatename_rust[] = "/usr/local/share/lemon/skeleton.rs";
+    
+    char *genericTemplateName = NULL;
+    char buf[1000] = { 0 };
+    FILE *in = NULL;
+    char *templateName = NULL;
+    char *cp = NULL;
     
     cp = strrchr(lemp->filename,'.');
-    if( cp ){
+    if (cp != NULL){
         sprintf(buf,"%.*s.lt",(int)(cp-lemp->filename),lemp->filename);
-    }else{
+    } else {
         sprintf(buf,"%s.lt",lemp->filename);
     }
-    if (language == LANG_D) {
-        templatename = templatename_d;
+    
+    if (language == LANG_RUST) {
+        genericTemplateName = templatename_rust;
+    } else if (language == LANG_D) {
+        genericTemplateName = templatename_d;
     } else if (language == LANG_CPP) {
-        templatename = templatename_cpp;
+        genericTemplateName = templatename_cpp;
     } else {
-        templatename = templatename_c;
+        genericTemplateName = templatename_c;
     }
-    if( access(buf,004)==0 ){
-        tpltname = buf;
-    }else if( access(templatename,004)==0 ){
-        tpltname = templatename;
-    }else{
-        tpltname = pathsearch(lemp->argv0,templatename,0);
+    
+    if (access(buf,004) == 0) {
+        templateName = buf;
+    } else if (access(genericTemplateName,004) == 0) {
+        templateName = genericTemplateName;
+    } else {
+        templateName = pathsearch(lemp->argv0,genericTemplateName,0);
     }
-    if( tpltname==0 ){
-        ErrorMsg(lemp->filename, LINENO_NONE, "Can't find the parser driver template file \"%s\".\n", templatename);
+    
+    if (templateName == NULL) {
+        ErrorMsg(lemp->filename, LINENO_NONE, "Can't find the parser driver template file \"%s\".\n", genericTemplateName);
         lemp->errorcnt++;
         return 0;
     }
-    in = fopen(tpltname,"rb");
-    if( in==0 ){
-        ErrorMsg(lemp->filename, LINENO_NONE, "Can't open the template file \"%s\".\n",templatename);
+    
+    in = fopen(templateName,"rb");
+    if (in == NULL) {
+        ErrorMsg(lemp->filename, LINENO_NONE, "Can't open the template file \"%s\".\n",genericTemplateName);
         lemp->errorcnt++;
         return 0;
     }
+    
     return in;
 }
 
@@ -738,11 +747,12 @@ void print_stack_union(
     
     /* Print out the definition of YYTOKENTYPE and YYMINORTYPE */
     lineno = *plineno;
-    if (language == LANG_D) {
+    
+    if (language == LANG_RUST) {
+        /* Rust. */
+    } else if (language == LANG_D) {
         /* D language. */
-        fprintf(out,"alias %s token_t;\n", lemp->tokentype ?
-                lemp->tokentype : "void*"); lineno++;
-        
+        fprintf(out,"alias %s token_t;\n", lemp->tokentype ? lemp->tokentype : "void*"); lineno++;
         fprintf(out,"private union YYMINORTYPE {\n"); lineno++;
         fprintf(out,"  token_t yy0;\n"); lineno++;
         for(i=0; i<arraysize; i++){
@@ -756,8 +766,7 @@ void print_stack_union(
         free(stddt);
         free(types);
         fprintf(out,"}\n"); lineno++;
-        
-    } else {
+    } else if (language == LANG_C || language == LANG_CPP) {
         /* C and C++ languages. */
         name = lemp->name ? lemp->name : "Parse";
         if( mhflag ){ fprintf(out,"#if INTERFACE\n"); lineno++; }
@@ -777,7 +786,11 @@ void print_stack_union(
         free(stddt);
         free(types);
         fprintf(out,"} YYMINORTYPE;\n"); lineno++;
+    } else {
+        ErrorMsg("lemon", LINENO_NONE, "Unsupported language number %d in %s\n", language, __PRETTY_FUNCTION__);
+        exit(1);
     }
+    
     *plineno = lineno;
 }
 
@@ -785,21 +798,80 @@ void print_stack_union(
  ** Return the name of a C datatype able to represent values between
  ** lwr and upr, inclusive.
  */
-static const char *minimum_size_type(int lwr, int upr){
-    if( lwr>=0 ){
-        if( upr<=255 ){
-            return language==LANG_D ? "ubyte" : "unsigned char";
-        }else if( upr<65535 ){
-            return language==LANG_D ? "ushort" : "unsigned short int";
-        }else{
-            return language==LANG_D ? "uint" : "unsigned int";
+static const char *minimum_size_type(int lower, int upper){
+    uint8_t bytesRequired = 0;
+    int signedType = 0;
+    
+    if (lower >= 0) {
+        if (upper <= 255) {
+            bytesRequired = 1;
+            signedType = 0;
+        } else if (upper < 65535) {
+            bytesRequired = 2;
+            signedType = 0;
+        } else {
+            bytesRequired = 4;
+            signedType = 0;
         }
-    }else if( lwr>=-127 && upr<=127 ){
-        return language==LANG_D ? "byte" : "signed char";
-    }else if( lwr>=-32767 && upr<32767 ){
-        return "short";
-    }else{
-        return "int";
+    } else {
+        if (lower >= -128 && upper <= 127) {
+            bytesRequired = 1;
+            signedType = 1;
+        } else if (upper >= -32768 && upper <= 32767) {
+            bytesRequired = 2;
+            signedType = 1;
+        } else {
+            bytesRequired = 4;
+            signedType = 1;
+        }
+    }
+    
+    switch (language) {
+        case LANG_RUST: {
+            if (bytesRequired == 1) {
+                return (signedType == 1) ? "s8" : "u8";
+            } else if (bytesRequired == 2) {
+                return (signedType == 1) ? "s16" : "u16";
+            } else if (bytesRequired == 4) {
+                return (signedType == 1) ? "s32" : "u32";
+            } else {
+                ErrorMsg("lemon", LINENO_NONE, "Unsupported value size %d (signed = %d) for Rust in %s\n", bytesRequired, signedType, __PRETTY_FUNCTION__);
+                exit(1);
+            }
+        }
+            
+        case LANG_D: {
+            if (bytesRequired == 1) {
+                return (signedType == 1) ? "byte" : "ubyte";
+            } else if (bytesRequired == 2) {
+                return (signedType == 1) ? "short" : "ushort";
+            } else if (bytesRequired == 4) {
+                return (signedType == 1) ? "int" : "uint";
+            } else {
+                ErrorMsg("lemon", LINENO_NONE, "Unsupported value size %d (signed = %d) for D in %s\n", bytesRequired, signedType, __PRETTY_FUNCTION__);
+                exit(1);
+            }
+        }
+        
+        case LANG_C:
+            /* Explicit Fall-Through. */
+        case LANG_CPP: {
+            if (bytesRequired == 1) {
+                return (signedType == 1) ? "signed char" : "unsigned char";
+            } else if (bytesRequired == 2) {
+                return (signedType == 1) ? "short" : "unsigned short int";
+            } else if (bytesRequired == 4) {
+                return (signedType == 1) ? "int" : "unsigned int";
+            } else {
+                ErrorMsg("lemon", LINENO_NONE, "Unsupported value size %d (signed = %d) for C/C++ in %s\n", bytesRequired, signedType, __PRETTY_FUNCTION__);
+                exit(1);
+            }
+        }
+            
+        default: {
+            ErrorMsg("lemon", LINENO_NONE, "Unsupported language number %d in %s\n", language, __PRETTY_FUNCTION__);
+            exit(1);
+        }
     }
 }
 
@@ -862,14 +934,24 @@ void ReportTable(
     struct axset *ax;
     
     in = tplt_open(lemp);
-    if( in==0 ) return;
-    out = file_open(lemp, language==LANG_D ? ".d" :
-                    language==LANG_CPP ? ".cc" :
-                    ".c", "wb");
-    if( out==0 ){
+    if( in==NULL ) {
+        return;
+    }
+    
+    char *const languageExtension =
+        (language == LANG_RUST) ? ".rs" :
+        (language == LANG_D) ? ".d" :
+        (language == LANG_C) ? ".c" :
+        (language == LANG_CPP) ? ".cc" :
+        NULL;
+    assert(languageExtension && "No extension known for current language.");
+    
+    out = file_open(lemp, languageExtension, "wb");
+    if( out==NULL ){
         fclose(in);
         return;
     }
+    
     lineno = 1;
     tplt_xfer(lemp->name,in,out,&lineno);
     
@@ -886,8 +968,13 @@ void ReportTable(
     if (language == LANG_D) {
         char *prefix = lemp->tokenprefix ? lemp->tokenprefix : "";
         for(i=1; i<lemp->nterminal; i++){
-            fprintf (out, "const int %s%-30s = %2d;\n",
-                     prefix, lemp->symbols[i]->name,i);
+            fprintf (out, "const int %s%-30s = %2d;\n", prefix, lemp->symbols[i]->name, i);
+            lineno++;
+        }
+    } else if (language == LANG_RUST) {
+        char *prefix = lemp->tokenprefix ? lemp->tokenprefix : "";
+        for(i=1; i<lemp->nterminal; i++){
+            fprintf (out, "pub const %s%-30s: TokenMajor = %2d;\n", prefix, lemp->symbols[i]->name, i);
             lineno++;
         }
     } else if (mhflag) {
@@ -922,6 +1009,7 @@ void ReportTable(
         fprintf(out,"const int YYNRULE = %d;\n",lemp->nrule);  lineno++;
         fprintf(out,"const int YYERRORSYMBOL = %d;\n", lemp->errsym->useCnt ?
                 lemp->errsym->index : -1);  lineno++;
+    } else if (language == LANG_RUST) {
         
     } else {
         /* C and C++ languages. */

@@ -58,14 +58,14 @@ static void handle_D_option(char *z){
  ** Set an output language (c, c++, d).
  */
 static void handle_l_option(char *z){
-    if (strcmp (z, "c") == 0) {
+    if (strcmp(z, "c") == 0) {
         language = LANG_C;
-        
-    } else if (strcmp (z, "c++") == 0) {
+    } else if (strcmp(z, "c++") == 0) {
         language = LANG_CPP;
-        
-    } else if (strcmp (z, "d") == 0) {
+    } else if (strcmp(z, "d") == 0) {
         language = LANG_D;
+    } else if (strcmp(z, "rust") == 0) {
+        language = LANG_RUST;
     }
 }
 
@@ -85,7 +85,7 @@ int main(int argc, char **argv)
         {OPT_FLAG, "c", (char*)&compress, "Don't compress the action table."},
         {OPT_FSTR, "D", (char*)handle_D_option, "Define an %ifdef macro."},
         {OPT_FLAG, "g", (char*)&rpflag, "Print grammar without actions."},
-        {OPT_FSTR, "l", (char*)handle_l_option, "Set an output language (c, c++, d)."},
+        {OPT_FSTR, "l", (char*)handle_l_option, "Set an output language (c, c++, d, rust)."},
         {OPT_FLAG, "m", (char*)&mhflag, "Output a makeheaders compatible file"},
         {OPT_FLAG, "q", (char*)&quiet, "(Quiet) Don't print the report file."},
         {OPT_FLAG, "s", (char*)&statistics,
@@ -141,7 +141,7 @@ int main(int argc, char **argv)
     /* Generate a reprint of the grammar, if requested on the command line */
     if( rpflag ){
         Reprint(&lem);
-    }else{
+    } else {
         /* Initialize the size for all follow and first sets */
         SetSize(lem.nterminal+1);
         
@@ -175,7 +175,9 @@ int main(int argc, char **argv)
         ResortStates(&lem);
         
         /* Generate a report of the parser generated.  (the "y.output" file) */
-        if( !quiet ) ReportOutput(&lem);
+        if( !quiet ) {
+            ReportOutput(&lem);
+        }
         
         /* Generate the source code for the parser */
         ReportTable(&lem, mhflag);
@@ -183,8 +185,9 @@ int main(int argc, char **argv)
         /* Produce a header file for use by the scanner.  (This step is
          ** omitted if the "-m" option is used because makeheaders will
          ** generate the file for us.) */
-        if (! mhflag && language != LANG_D)
+        if (! mhflag && language != LANG_D && language != LANG_RUST) {
             ReportHeader(&lem);
+        }
     }
     if( statistics ){
         LogMsg(LOGLEVEL_INFO, lem.filename, LINENO_NONE,
