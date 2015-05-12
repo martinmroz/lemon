@@ -11,6 +11,7 @@
 
 #include "action.h"
 #include "error.h"
+#include "report_rust.h"
 #include "set.h"
 #include "table.h"
 
@@ -747,27 +748,35 @@ void print_stack_union(
     
     /* Print out the definition of YYTOKENTYPE and YYMINORTYPE */
     lineno = *plineno;
-    
+
+    int const hasErrorSymbol = (lemp->errsym->useCnt > 0);
+    int const errorDataTypeNumber = lemp->errsym->dtnum;
+
     if (language == LANG_RUST) {
-        /* Rust. */
+        /* 
+         * Rust language. 
+         */
+        lineno = ReportRustWriteTokenMajorDeclaration(lemp->filename, LINENO_NONE, lineno, out, lemp->tokentype);
+        lineno = ReportRustWriteTokenMinorDeclaration(lemp->filename, LINENO_NONE, lineno, out, types, arraysize, hasErrorSymbol, errorDataTypeNumber);
     } else if (language == LANG_D) {
-        /* D language. */
+        /* 
+         * D language. 
+         */
         fprintf(out,"alias %s token_t;\n", lemp->tokentype ? lemp->tokentype : "void*"); lineno++;
         fprintf(out,"private union YYMINORTYPE {\n"); lineno++;
         fprintf(out,"  token_t yy0;\n"); lineno++;
         for(i=0; i<arraysize; i++){
-            if( types[i]==0 ) continue;
+            if( types[i]==0 ) { continue; }
             fprintf(out,"  %s yy%d;\n",types[i],i+1); lineno++;
-            free(types[i]);
         }
-        if( lemp->errsym->useCnt ){
-            fprintf(out,"  int yy%d;\n",lemp->errsym->dtnum); lineno++;
+        if( hasErrorSymbol ){
+            fprintf(out,"  int yy%d;\n",errorDataTypeNumber); lineno++;
         }
-        free(stddt);
-        free(types);
         fprintf(out,"}\n"); lineno++;
     } else if (language == LANG_C || language == LANG_CPP) {
-        /* C and C++ languages. */
+        /* 
+         * C and C++ languages. 
+         */
         name = lemp->name ? lemp->name : "Parse";
         if( mhflag ){ fprintf(out,"#if INTERFACE\n"); lineno++; }
         fprintf(out,"#define %sTOKENTYPE %s\n",name,
@@ -776,20 +785,26 @@ void print_stack_union(
         fprintf(out,"typedef union {\n"); lineno++;
         fprintf(out,"  %sTOKENTYPE yy0;\n",name); lineno++;
         for(i=0; i<arraysize; i++){
-            if( types[i]==0 ) continue;
-            fprintf(out,"  %s yy%d;\n",types[i],i+1); lineno++;
-            free(types[i]);
+            if( types[i]==0 ) { continue; }
+            fprintf(out,"  %s yy%d;\n",types[i],i+1);
+            lineno++;
         }
-        if( lemp->errsym->useCnt ){
-            fprintf(out,"  int yy%d;\n",lemp->errsym->dtnum); lineno++;
+        if( hasErrorSymbol ){
+            fprintf(out,"  int yy%d;\n",errorDataTypeNumber);
+            lineno++;
         }
-        free(stddt);
-        free(types);
         fprintf(out,"} YYMINORTYPE;\n"); lineno++;
     } else {
         ErrorMsg("lemon", LINENO_NONE, "Unsupported language number %d in %s\n", language, __PRETTY_FUNCTION__);
         exit(1);
     }
+
+    /* Clean up data type usage. */
+    for (i = 0; i < arraysize; ++i) {
+        free(types[i]);
+    }
+    free(types);
+    free(stddt);
     
     *plineno = lineno;
 }

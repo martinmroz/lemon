@@ -7,6 +7,7 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
+		8DB55B2D1B0018BF00E643DC /* report_rust.c in Sources */ = {isa = PBXBuildFile; fileRef = 8DB55B2B1B0018BF00E643DC /* report_rust.c */; };
 		FD3D18061ABE00E6005BE139 /* build.c in Sources */ = {isa = PBXBuildFile; fileRef = FD3D18041ABE00E6005BE139 /* build.c */; };
 		FD3D18091ABE010B005BE139 /* configlist.c in Sources */ = {isa = PBXBuildFile; fileRef = FD3D18071ABE010B005BE139 /* configlist.c */; };
 		FD3D180C1ABE012C005BE139 /* error.c in Sources */ = {isa = PBXBuildFile; fileRef = FD3D180A1ABE012C005BE139 /* error.c */; };
@@ -34,6 +35,8 @@
 /* End PBXCopyFilesBuildPhase section */
 
 /* Begin PBXFileReference section */
+		8DB55B2B1B0018BF00E643DC /* report_rust.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; path = report_rust.c; sourceTree = "<group>"; };
+		8DB55B2C1B0018BF00E643DC /* report_rust.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = report_rust.h; sourceTree = "<group>"; };
 		FD3D17FA1ABDFFEF005BE139 /* lemon */ = {isa = PBXFileReference; explicitFileType = "compiled.mach-o.executable"; includeInIndex = 0; path = lemon; sourceTree = BUILT_PRODUCTS_DIR; };
 		FD3D18041ABE00E6005BE139 /* build.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; path = build.c; sourceTree = "<group>"; };
 		FD3D18051ABE00E6005BE139 /* build.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = build.h; sourceTree = "<group>"; };
@@ -121,6 +124,8 @@
 				FD3D18131ABE0173005BE139 /* plink.c */,
 				FD3D18171ABE0185005BE139 /* report.h */,
 				FD3D18161ABE0185005BE139 /* report.c */,
+				8DB55B2C1B0018BF00E643DC /* report_rust.h */,
+				8DB55B2B1B0018BF00E643DC /* report_rust.c */,
 				FD3D181A1ABE0196005BE139 /* set.h */,
 				FD3D18191ABE0196005BE139 /* set.c */,
 				FD3D181D1ABE01C0005BE139 /* struct.h */,
@@ -192,6 +197,7 @@
 				FD3D181B1ABE0196005BE139 /* set.c in Sources */,
 				FD3D18061ABE00E6005BE139 /* build.c in Sources */,
 				FD3D18181ABE0185005BE139 /* report.c in Sources */,
+				8DB55B2D1B0018BF00E643DC /* report_rust.c in Sources */,
 				FD3D180F1ABE0141005BE139 /* option.c in Sources */,
 				FD3D18261ABE06CC005BE139 /* main.c in Sources */,
 				FD3D18091ABE010B005BE139 /* configlist.c in Sources */,

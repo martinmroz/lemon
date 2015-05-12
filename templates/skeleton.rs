@@ -13,12 +13,12 @@ use std::rc::Rc;
  *
  * Each symbol here is a terminal symbol in the grammar.
  */
-type TokenMajor = CodeNumber;
+pub type TokenMajor = CodeNumber;
 
 pub mod token {
     use super::TokenMajor;
     
-    /* Numerical value of each Token major. */
+    /* Numerical value of each major terminal token. */
     pub const PLUS: TokenMajor = 1;
     pub const MINUS: TokenMajor = 2;
     pub const DIVIDE: TokenMajor = 3;
@@ -62,8 +62,10 @@ const STATE_COUNT: usize = 11;
 const RULE_COUNT: usize = 6;
 const ERROR_SYMBOL: Option<usize> = None;
 
-pub struct TokenMinor {
-    pub yy0: i32,
+#[allow(non_camel_case_types)]
+pub enum TokenMinor {
+    yy0(i32),
+    yyInvalidToken
 }
 
 /*
@@ -72,13 +74,7 @@ pub struct TokenMinor {
  */
 impl TokenMinor {
     fn new() -> TokenMinor {
-        TokenMinor {
-            /*
-             * The following is automatically filled in with the %token_constructor section
-             * from the input grammar.
-             */
-            yy0: 0,
-        }
+        TokenMinor::yy0(0)
     }
 }
 
@@ -131,26 +127,26 @@ impl TokenMinor {
  */
 const ACTION_TABLE_LEN: usize = 15;
 const ACTION_TABLE: [ActionNumber; ACTION_TABLE_LEN] = [
- /*     0 */    11,    4,    2,    3,    1,    3,    1,    6,   18,    5,
- /*    10 */    10,    9,    8,   19,    7,
+/*     0 */    11,    4,    2,    3,    1,    3,    1,    6,   18,    5,
+/*    10 */    10,    9,    8,   19,    7,
 ];
 const LOOKAHEAD_TABLE: [CodeNumber; 15] = [
- /*     0 */     0,    1,    2,    3,    4,    3,    4,    8,    7,    8,
- /*    10 */     5,    8,    8,    9,    8,
+/*     0 */     0,    1,    2,    3,    4,    3,    4,    8,    7,    8,
+/*    10 */     5,    8,    8,    9,    8,
 ];
 const SHIFT_USE_DEFAULT: i32 = -1;
 const SHIFT_MAX: i32 = 7;
 const SHIFT_OFFSETS: [i32; 8] = [
- /*     0 */     5,    5,    5,    5,    5,    0,    2,    2,
+/*     0 */     5,    5,    5,    5,    5,    0,    2,    2,
 ];
 const REDUCE_USE_DEFAULT: i32 = -2;
 const REDUCE_MAX: i32 = 4;
 const REDUCE_OFFSETS: [i32; 5] = [
- /*     0 */     1,    4,    6,    3,   -1,
+/*     0 */     1,    4,    6,    3,   -1,
 ];
 const DEFAULT_ACTION_TABLE: [ActionNumber; 11]  = [
- /*     0 */    17,   17,   17,   17,   17,   17,   13,   12,   14,   15,
- /*    10 */    16,
+/*     0 */    17,   17,   17,   17,   17,   17,   13,   12,   14,   15,
+/*    10 */    16,
 ];
 
 /* 
@@ -217,9 +213,9 @@ const RULE_INFO_LIST: [RuleInfo; 6] = [
  * are required, as defined below.
  */
 const TOKEN_NAMES: [&'static str; 9] = [
- "$",             "PLUS",          "MINUS",         "DIVIDE",      
- "TIMES",         "INTEGER",       "error",         "program",     
- "expr",        
+    "$",             "PLUS",          "MINUS",         "DIVIDE",      
+    "TIMES",         "INTEGER",       "error",         "program",     
+    "expr",        
 ];
 
 /* 
@@ -255,7 +251,7 @@ pub struct Parser {
 
 impl Parser {
     
-    /**
+    /*
      * Allocate a new parser object.
      */
     pub fn new() -> Parser {
@@ -316,10 +312,10 @@ impl Parser {
         }
     }
     
-    /* The following function deletes the value associated with a
+    /* 
+     * The following function deletes the value associated with a
      * symbol.  The symbol can be either a terminal or nonterminal.
-     * "major" is the symbol code, and "yypminor" is a pointer to
-     * the value.
+     * "major" is the symbol code, and "yypminor" is a pointer to the value.
      */
     #[allow(unused_variables)]
     fn destructor(&mut self, major: TokenMajor, minor: Rc<TokenMinor>) {
@@ -385,16 +381,16 @@ impl Parser {
              * If a wildcard action is specified, look it up in the action table.
              */
             match ACTION_NUMBER_WILDCARD {
-               Some(wildcard) => {
-                   let j = i - (i_lookahead as i32) + (wildcard as i32);
-                   if (j >= 0) && (j < ACTION_TABLE_LEN as i32) && (LOOKAHEAD_TABLE[j as usize] == wildcard) {
-                       self.trace_log(format!("WILDCARD {} => {}", TOKEN_NAMES[i_lookahead], TOKEN_NAMES[wildcard]));
-                       return ACTION_TABLE[j as usize];
-                   }
-               } 
-               None => {
-                   /* No wildcard specified. */
-               }
+                Some(wildcard) => {
+                    let j = i - (i_lookahead as i32) + (wildcard as i32);
+                    if (j >= 0) && (j < ACTION_TABLE_LEN as i32) && (LOOKAHEAD_TABLE[j as usize] == wildcard) {
+                        self.trace_log(format!("WILDCARD {} => {}", TOKEN_NAMES[i_lookahead], TOKEN_NAMES[wildcard]));
+                        return ACTION_TABLE[j as usize];
+                    }
+                } 
+                None => {
+                    /* No wildcard specified. */
+                }
             }
         }
         
@@ -467,81 +463,114 @@ impl Parser {
      * Perform a reduce action and the shift that must immediately
      * follow the reduce.
      */
-     #[allow(unused_variables)]
-     fn reduce(&mut self, ruleno: usize) {
+    #[allow(unused_variables)]
+    #[allow(non_snake_case)]
+    fn reduce(&mut self, ruleno: usize) {
          
-         /* Log the reduce action to the trace file. */
-         if ruleno < RULE_NAMES.len() {
-             self.trace_log(format!("Reduce [{}]", RULE_NAMES[ruleno]));
-         }
+        /* Log the reduce action to the trace file. */
+        if ruleno < RULE_NAMES.len() {
+            self.trace_log(format!("Reduce [{}]", RULE_NAMES[ruleno]));
+        }
          
-         let mut yy_goto_minor = TokenMinor::new();
-          
-         match ruleno {
-             /* 
-              * Beginning here are the reduction cases.  A typical example follows:
-              *
-              *   0 => {
-              *     /* #line <lineno> <grammarfile> */
-              *     { ... }           // User supplied code
-              *     /* #line <lineno> <thisfile> */
-              *     break;
-              *   }
-              */
+        let mut yy_goto_minor = TokenMinor::new();
+         
+        match ruleno {
+            /* 
+             * Beginning here are the reduction cases.  A typical example follows:
+             *
+             *   0 => {
+             *     #line <lineno> <grammarfile>
+             *     { ... }           // User supplied code
+             *     #line <lineno> <thisfile>
+             *     break;
+             *   }
+             */
               
-             0 => {
-                 /* program ::= expr */
-                 { println!("Result={}", self.stack_entry_from_tail(0).minor.yy0); }
-             }
-             1 => {
-                 /* expr ::= expr MINUS expr */
-                 { yy_goto_minor.yy0 = self.stack_entry_from_tail(2).minor.yy0 - self.stack_entry_from_tail(0).minor.yy0; }
-             }
-             2 => {
-                 /* expr ::= expr PLUS expr */
-                 { yy_goto_minor.yy0 = self.stack_entry_from_tail(2).minor.yy0 + self.stack_entry_from_tail(0).minor.yy0; }
-             }
-             3 => {
-                 /* expr ::= expr TIMES expr */
-                 { yy_goto_minor.yy0 = self.stack_entry_from_tail(2).minor.yy0 * self.stack_entry_from_tail(0).minor.yy0; }
-             }
-             4 => {
-                /* expr ::= expr DIVIDE expr */
-                if self.stack_entry_from_tail(0).minor.yy0 != 0 {
-                    yy_goto_minor.yy0 = self.stack_entry_from_tail(2).minor.yy0 / self.stack_entry_from_tail(0).minor.yy0;
-                } else {
-                    println!("divide by zero\n");
+            0 => {
+                /* program ::= expr */
+                match &*self.stack_entry_from_tail(0).minor {
+                    &TokenMinor::yy0(A) => { println!("Result={}", A); }
+                    _ => { 
+                        assert!(false, "Unable to evaluate nonterminal."); 
+                    }
                 }
-             }
-             5 => {
-                 /* expr ::= INTEGER */
-                 { yy_goto_minor.yy0 = self.stack_entry_from_tail(0).minor.yy0; }
-             }
-             _ => {
-                 /* Default: No Action. */
-             }
-         }
+            }
+            1 => {
+                /* expr ::= expr MINUS expr */
+                match (&*self.stack_entry_from_tail(2).minor, &*self.stack_entry_from_tail(0).minor) {
+                    (&TokenMinor::yy0(A), &TokenMinor::yy0(B)) => { yy_goto_minor = TokenMinor::yy0(A - B); }
+                    _ => {
+                        assert!(false, "Unable to evaluate nonterminal.");
+                    }
+                }
+            }
+            2 => {
+                /* expr ::= expr PLUS expr */
+                match (&*self.stack_entry_from_tail(2).minor, &*self.stack_entry_from_tail(0).minor) {
+                    (&TokenMinor::yy0(A), &TokenMinor::yy0(B)) => { yy_goto_minor = TokenMinor::yy0(A + B); }
+                    _ => {
+                        assert!(false, "Unable to evaluate nonterminal.");
+                    }
+                }
+            }
+            3 => {
+                /* expr ::= expr TIMES expr */
+                match (&*self.stack_entry_from_tail(2).minor, &*self.stack_entry_from_tail(0).minor) {
+                    (&TokenMinor::yy0(A), &TokenMinor::yy0(B)) => { yy_goto_minor = TokenMinor::yy0(A * B); }
+                    _ => {
+                        assert!(false, "Unable to evaluate nonterminal.");
+                    }
+                }
+            }
+            4 => {
+                /* expr ::= expr DIVIDE expr */
+                match (&*self.stack_entry_from_tail(2).minor, &*self.stack_entry_from_tail(0).minor) {
+                    (&TokenMinor::yy0(A), &TokenMinor::yy0(B)) => {
+                        if B != 0 {
+                            yy_goto_minor = TokenMinor::yy0(A / B);
+                        } else {
+                            println!("divide by zero\n");
+                        }
+                    }
+                    _ => {
+                        assert!(false, "Unable to evaluate nonterminal.");
+                    }
+                }
+            }
+            5 => {
+                /* expr ::= INTEGER */
+                match &*self.stack_entry_from_tail(0).minor {
+                    &TokenMinor::yy0(A) => { yy_goto_minor = TokenMinor::yy0(A); }
+                    _ => { 
+                        assert!(false, "Unable to evaluate nonterminal."); 
+                    }
+                }
+            }
+            _ => {
+                /* Default: No Action. */
+            }
+        }
+        
+        let yy_goto = RULE_INFO_LIST[ruleno].lhs;
+        let yy_size = RULE_INFO_LIST[ruleno].rhs_count as usize;
+        let yy_action = self.find_reduce_action(self.stack_entry_from_tail(yy_size).state_number, yy_goto);
          
-         let yy_goto = RULE_INFO_LIST[ruleno].lhs;
-         let yy_size = RULE_INFO_LIST[ruleno].rhs_count as usize;
-         let yy_action = self.find_reduce_action(self.stack_entry_from_tail(yy_size).state_number, yy_goto);
+        /* Pop `yy_size` entries off the stack without invoking the destructor. */
+        let new_length = self.stack.len() - yy_size;
+        self.stack.truncate(new_length);
          
-         /* Pop `yy_size` entries off the stack without invoking the destructor. */
-         let new_length = self.stack.len() - yy_size;
-         self.stack.truncate(new_length);
-         
-         /* 
-          * If we are not debugging and the reduce action popped
-          * at least one element off the stack, then we can shift
-          * the new element back onto the stack here 
-          */
-         if yy_action < STATE_COUNT {
-             self.shift(yy_action as i32, yy_goto, Rc::new(yy_goto_minor));
-         } else {
-             assert!(yy_action == ACTION_NUMBER_ACCEPT);
-             self.accept();
-         }
-     }
+        /* 
+         * If we are not debugging and the reduce action popped
+         * at least one element off the stack, then we can shift
+         * the new element back onto the stack here 
+         */
+        if yy_action < STATE_COUNT {
+            self.shift(yy_action as i32, yy_goto, Rc::new(yy_goto_minor));
+        } else {
+            assert!(yy_action == ACTION_NUMBER_ACCEPT);
+            self.accept();
+        }
+    }
     
     /*
      * The following code executes when the parse fails.
@@ -559,8 +588,14 @@ impl Parser {
      */
     #[allow(unused_variables)]
     fn syntax_error (&mut self, major: usize, minor: Rc<TokenMinor>) {
-        let token = minor.yy0;
-        println!("Syntax error!");
+        match *self.stack_entry_from_tail(0).minor {
+            TokenMinor::yy0(token) => { 
+                println!("Syntax error!");
+            }
+            _ => { 
+                assert!(false, "Unable to evaluate nonterminal."); 
+            }
+        }
     }
     
     /*
