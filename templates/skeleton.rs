@@ -64,8 +64,8 @@ const ERROR_SYMBOL: Option<usize> = None;
 
 #[allow(non_camel_case_types)]
 pub enum TokenMinor {
+    yyInvalidToken,
     yy0(i32),
-    yyInvalidToken
 }
 
 /*
