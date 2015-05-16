@@ -30,28 +30,28 @@ int ReportRustWriteTokenMinorDeclaration(char *const inputFilename, int inputLin
 {
     /* 
      * Unlike other languages, Rust has no concept of a union (due to inherent lack of safety).
-     * As a result, the token minor type is an enumeration with associated values.
+     * As a result, the token minor type is an enumeration with associated values, which are 
+     * destructured as part of the reduce step.
      */
-    fprintf(fp, "#[allow(non_camel_case_types)]\n");
     fprintf(fp, "pub enum TokenMinor {\n");
-    lineno += 2;
+    ++lineno;
 
     /* Emit the required yy0 base token. */
-    fprintf(fp, "  yyInvalidMinorToken,");
-    fprintf(fp, "  yy0(i32),\n");
+    fprintf(fp, "  YYInvalidToken,");
+    fprintf(fp, "  YY0(i32),\n");
     lineno += 2;
 
     /* Emit all user defined tokens. */
     for (int i = 0; i < typeCount; ++i) {
         if (types[i] != NULL) {
-            fprintf(fp, "  yy%d(%s),\n", i + 1, types[i]);
+            fprintf(fp, "  YY%d(%s),\n", i + 1, types[i]);
             ++lineno;
         }
     }
 
     /* Emit the error token if available. */
     if (hasErrorSymbol) {
-        fprintf(fp, "  yy%d(i32),\n", errorDataTypeNumber);
+        fprintf(fp, "  YY%d(i32),\n", errorDataTypeNumber);
         ++lineno;
     }
 

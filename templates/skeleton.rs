@@ -8,17 +8,22 @@ use std::rc::Rc;
  * This section comprises all token values.
  *
  * These constants (all generated automatically by the parser generator)
- * specify the various kinds of tokens (terminals) that the parser
- * understands.
+ * specify the various kinds of tokens (terminals) that the parser understands.
  *
  * Each symbol here is a terminal symbol in the grammar.
  */
+pub type ParseTokenType = i32;
 pub type TokenMajor = CodeNumber;
+pub enum TokenMinor {
+    YYInvalidToken,
+    YY0(ParseTokenType),
+}
 
 pub mod token {
     use super::TokenMajor;
     
     /* Numerical value of each major terminal token. */
+    pub const __RESERVED_EOF__: TokenMajor = 0;
     pub const PLUS: TokenMajor = 1;
     pub const MINUS: TokenMajor = 2;
     pub const DIVIDE: TokenMajor = 3;
@@ -47,7 +52,7 @@ pub mod token {
  *    TokenMinor             is the data type used for all minor tokens.
  *                           This is typically a union of many types, one of
  *                           which is Token.  The entry in the union
- *                           for base tokens is called "yy0".
+ *                           for base tokens is called "YY0".
  */
 type CodeNumber = usize;
 const CODE_NUMBER_NONE: CodeNumber = 10;
@@ -61,22 +66,6 @@ const ACTION_NUMBER_ERROR: ActionNumber = STATE_COUNT + RULE_COUNT;
 const STATE_COUNT: usize = 11;
 const RULE_COUNT: usize = 6;
 const ERROR_SYMBOL: Option<usize> = None;
-
-#[allow(non_camel_case_types)]
-pub enum TokenMinor {
-    yyInvalidToken,
-    yy0(i32),
-}
-
-/*
- * Implementation of the constructor for an empty minor token. This is exclusively used
- * by the Rust parser template.
- */
-impl TokenMinor {
-    fn new() -> TokenMinor {
-        TokenMinor::yy0(0)
-    }
-}
 
 /* 
  * Next are that tables used to determine what action to take based on the
@@ -296,7 +285,7 @@ impl Parser {
      * If there is a destructor routine associated with the token which
      * is popped from the stack, then call it.
      *
-     * Return the major token number for the symbol popped.
+     * @return The major token number for the symbol popped.
      */
     fn pop_parser_stack(&mut self) -> Option<usize> {
         if let Some(top) = self.stack.pop() {
@@ -306,9 +295,9 @@ impl Parser {
             
             /* Execute the non-terminal destructor for the token and return the major. */
             self.destructor(top.major, top.minor);
-            return Some(top.major);
+            Some(top.major)
         } else {
-            return None;
+            None
         }
     }
     
@@ -472,8 +461,8 @@ impl Parser {
             self.trace_log(format!("Reduce [{}]", RULE_NAMES[ruleno]));
         }
          
-        let mut yy_goto_minor = TokenMinor::new();
-         
+        let mut yy_goto_minor = TokenMinor::YYInvalidToken;
+        
         match ruleno {
             /* 
              * Beginning here are the reduction cases.  A typical example follows:
@@ -489,7 +478,9 @@ impl Parser {
             0 => {
                 /* program ::= expr */
                 match &*self.stack_entry_from_tail(0).minor {
-                    &TokenMinor::yy0(A) => { println!("Result={}", A); }
+                    &TokenMinor::YY0(A) => { 
+                        println!("Result={}", A); 
+                    }
                     _ => { 
                         assert!(false, "Unable to evaluate nonterminal."); 
                     }
@@ -498,7 +489,9 @@ impl Parser {
             1 => {
                 /* expr ::= expr MINUS expr */
                 match (&*self.stack_entry_from_tail(2).minor, &*self.stack_entry_from_tail(0).minor) {
-                    (&TokenMinor::yy0(A), &TokenMinor::yy0(B)) => { yy_goto_minor = TokenMinor::yy0(A - B); }
+                    (&TokenMinor::YY0(A), &TokenMinor::YY0(B)) => { 
+                        yy_goto_minor = TokenMinor::YY0(A - B); 
+                    }
                     _ => {
                         assert!(false, "Unable to evaluate nonterminal.");
                     }
@@ -507,7 +500,9 @@ impl Parser {
             2 => {
                 /* expr ::= expr PLUS expr */
                 match (&*self.stack_entry_from_tail(2).minor, &*self.stack_entry_from_tail(0).minor) {
-                    (&TokenMinor::yy0(A), &TokenMinor::yy0(B)) => { yy_goto_minor = TokenMinor::yy0(A + B); }
+                    (&TokenMinor::YY0(A), &TokenMinor::YY0(B)) => { 
+                        yy_goto_minor = TokenMinor::YY0(A + B); 
+                    }
                     _ => {
                         assert!(false, "Unable to evaluate nonterminal.");
                     }
@@ -516,7 +511,9 @@ impl Parser {
             3 => {
                 /* expr ::= expr TIMES expr */
                 match (&*self.stack_entry_from_tail(2).minor, &*self.stack_entry_from_tail(0).minor) {
-                    (&TokenMinor::yy0(A), &TokenMinor::yy0(B)) => { yy_goto_minor = TokenMinor::yy0(A * B); }
+                    (&TokenMinor::YY0(A), &TokenMinor::YY0(B)) => { 
+                        yy_goto_minor = TokenMinor::YY0(A * B); 
+                    }
                     _ => {
                         assert!(false, "Unable to evaluate nonterminal.");
                     }
@@ -525,9 +522,9 @@ impl Parser {
             4 => {
                 /* expr ::= expr DIVIDE expr */
                 match (&*self.stack_entry_from_tail(2).minor, &*self.stack_entry_from_tail(0).minor) {
-                    (&TokenMinor::yy0(A), &TokenMinor::yy0(B)) => {
+                    (&TokenMinor::YY0(A), &TokenMinor::YY0(B)) => {
                         if B != 0 {
-                            yy_goto_minor = TokenMinor::yy0(A / B);
+                            yy_goto_minor = TokenMinor::YY0(A / B);
                         } else {
                             println!("divide by zero\n");
                         }
@@ -540,7 +537,9 @@ impl Parser {
             5 => {
                 /* expr ::= INTEGER */
                 match &*self.stack_entry_from_tail(0).minor {
-                    &TokenMinor::yy0(A) => { yy_goto_minor = TokenMinor::yy0(A); }
+                    &TokenMinor::YY0(A) => { 
+                        yy_goto_minor = TokenMinor::YY0(A); 
+                    }
                     _ => { 
                         assert!(false, "Unable to evaluate nonterminal."); 
                     }
@@ -587,9 +586,9 @@ impl Parser {
      * The following code executes when a syntax error first occurs.
      */
     #[allow(unused_variables)]
-    fn syntax_error (&mut self, major: usize, minor: Rc<TokenMinor>) {
+    fn syntax_error(&mut self, major: usize, minor: Rc<TokenMinor>) {
         match *self.stack_entry_from_tail(0).minor {
-            TokenMinor::yy0(token) => { 
+            TokenMinor::YY0(token) => { 
                 println!("Syntax error!");
             }
             _ => { 
@@ -612,19 +611,19 @@ impl Parser {
     /* The main parser program.
      * The first argument is the major token number.  The second is the minor token.
      */
-    pub fn parse(&mut self, new_major: TokenMajor, minor: Option<TokenMinor>) {
+    pub fn parse(&mut self, new_major: TokenMajor, minor: Option<ParseTokenType>) {
         let mut major = new_major;
         let mut error_hit = false;
         let end_of_input = major == 0;
         let minor_union = match minor {
-            Some(minor_value) => Rc::new(minor_value),
-            None => Rc::new(TokenMinor::new())
+            Some(minor_value) => Rc::new(TokenMinor::YY0(minor_value)),
+            None => Rc::new(TokenMinor::YYInvalidToken)
         };
         
         /* Shift the end-of-file token ($) if the stack is empty. */
         if self.stack.len() == 0 {
             self.error_count = -1;
-            self.shift(0, 0, Rc::new(TokenMinor::new()));
+            self.shift(0, token::__RESERVED_EOF__, Rc::new(TokenMinor::YYInvalidToken));
         }
         
         self.trace_log(format!("Input {}", TOKEN_NAMES[major]));
@@ -682,7 +681,7 @@ impl Parser {
                                 self.parse_failed();
                                 major = CODE_NUMBER_NONE;
                             } else if top_major != error_symbol {
-                                self.shift(action as i32, error_symbol, Rc::new(TokenMinor::new()));
+                                self.shift(action as i32, error_symbol, Rc::new(TokenMinor::YYInvalidToken));
                             }
                             
                             self.error_count = 3;

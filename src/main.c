@@ -94,7 +94,7 @@ int main(int argc, char **argv)
         {OPT_FLAG,0,0,0}
     };
     int i;
-    struct lemon lem;
+    struct lemon lem = {};
     
     OptInit(argv,options,stderr);
     if( version ){
