@@ -74,12 +74,49 @@ int ReportRustWriteTokenMajorDeclaration(int lineno, FILE* fp, char *const prefi
 
     /* The remaining terminals are in the symbols list. */
     for (int i = 1; i < terminalCount; ++i) {
-        fprintf(fp, "  pub const %s%-30s: TokenMajor = %2d;\n", prefix, symbols[i]->name, i);
-        ++lineno;
+        if (symbols[i]->name && strlen(symbols[i]->name)) {
+            fprintf(fp, "  pub const %s%-30s: TokenMajor = %2d;\n", prefix, symbols[i]->name, i);
+            ++lineno;
+        }
     }
     
     /* Close the module. */
     fprintf(fp, "}\n");
     ++lineno;
+    return lineno;
+}
+
+int ReportRustWriteTypeDefinitions(int lineno, FILE* fp, char const *codeTypeMinimumSizeType, int const codeNumberNoneValue, char const *actionTypeMinimumSizeType, int const wildcardNumber, int const stateCount, int const ruleCount, int const errorSymbolNumber)
+{
+    /* Define the Code Number type an the no-code sentinel. */
+    fprintf(fp, "type CodeNumber = %s;\n", codeTypeMinimumSizeType);
+    fprintf(fp, "const CODE_NUMBER_NONE: CodeNumber = %d;\n", codeNumberNoneValue);
+    fprintf(fp, "\n");
+    lineno += 3;
+    
+    /* Define the Action Number type and special values. */
+    fprintf(fp, "type ActionNumber = %s\n", actionTypeMinimumSizeType);
+    fprintf(fp, "const ACTION_NUMBER_NONE: ActionNumber = STATE_COUNT + RULE_COUNT + 2;");
+    fprintf(fp, "const ACTION_NUMBER_ACCEPT: ActionNumber = STATE_COUNT + RULE_COUNT + 1;");
+    fprintf(fp, "const ACTION_NUMBER_ERROR: ActionNumber = STATE_COUNT + RULE_COUNT;");
+    fprintf(fp, "const ACTION_NUMBER_WILDCARD: Option<ActionNumber> = \n");
+    if (wildcardNumber > 0) {
+        fprintf(fp, "Some(%d);\n", wildcardNumber);
+    } else {
+        fprintf(fp, "None;\n");
+    }
+    lineno += 5;
+    
+    /* Emit the number of states, rules, and the error symbol. */
+    fprintf(fp, "const STATE_COUNT: usize = %d;\n", stateCount);
+    fprintf(fp, "const RULE_COUNT: usize = %d;\n", ruleCount);
+    fprintf(fp, "const ERROR_SYMBOL: Option<usize> = ");
+    if (errorSymbolNumber > 0) {
+        fprintf(fp, "Some(%d);\n", errorSymbolNumber);
+    } else {
+        fprintf(fp, "None;\n");
+    }
+    lineno += 3;
+    
     return lineno;
 }

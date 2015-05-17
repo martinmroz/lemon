@@ -984,15 +984,18 @@ void ReportTable(
     
     /* Generate definitions for all tokens. */
     if (language == LANG_D) {
+        /* D Language. */
         char *prefix = lemp->tokenprefix ? lemp->tokenprefix : "";
         for(i=1; i<lemp->nterminal; i++){
             fprintf (out, "const int %s%-30s = %2d;\n", prefix, lemp->symbols[i]->name, i);
             lineno++;
         }
     } else if (language == LANG_RUST) {
+        /* Rust language. */
         char *prefix = lemp->tokenprefix ? lemp->tokenprefix : "";
         lineno = ReportRustWriteTokenMajorDeclaration(lineno, out, prefix, lemp->symbols, lemp->nterminal);
     } else if (mhflag) {
+        /* C and C++ with Makeheaders enabled. */
         char *prefix;
         fprintf(out,"#if INTERFACE\n"); lineno++;
         if( lemp->tokenprefix ) prefix = lemp->tokenprefix;
@@ -1008,34 +1011,48 @@ void ReportTable(
     }
     tplt_xfer(lemp->name,in,out,&lineno);
     
-    /* Generate the defines */
+    char const* codeTypeMinimumSizeType = minimum_size_type(0, lemp->nsymbol+5);
+    char const* actionTypeMinimumSizeType = minimum_size_type(0, lemp->nstate + lemp->nrule + 5);
+    
+    int const codeNumberNoneValue = lemp->nsymbol + 1;
+    int const wildcardNumber = lemp->wildcard ? lemp->wildcard->index : -1;
+    int const stateCount = lemp->nstate;
+    int const ruleCount = lemp->nrule;
+    int const errorSymbolNumber = lemp->errsym->useCnt ? lemp->errsym->index : -1;
+    
+    /* Generate the type definitions. */
     if (language == LANG_D) {
         /* D language. */
-        fprintf(out,"alias %s YYCODETYPE;\n",
-                minimum_size_type(0, lemp->nsymbol+5)); lineno++;
-        fprintf(out,"const YYCODETYPE YYNOCODE = %d;\n",lemp->nsymbol+1);  lineno++;
-        fprintf(out,"alias %s YYACTIONTYPE;\n",
-                minimum_size_type(0, lemp->nstate+lemp->nrule+5));  lineno++;
-        fprintf(out,"const int YYWILDCARD = %d;\n",
-                lemp->wildcard ? lemp->wildcard->index : -1);  lineno++;
+        fprintf(out,"alias %s YYCODETYPE;\n", codeTypeMinimumSizeType); lineno++;
+        fprintf(out,"const YYCODETYPE YYNOCODE = %d;\n",codeNumberNoneValue);  lineno++;
+        fprintf(out,"alias %s YYACTIONTYPE;\n", actionTypeMinimumSizeType);  lineno++;
+        fprintf(out,"const int YYWILDCARD = %d;\n", wildcardNumber);  lineno++;
         print_stack_union(out,lemp,&lineno,mhflag);
         name = lemp->name ? lemp->name : "Parse";
-        fprintf(out,"const int YYNSTATE = %d;\n",lemp->nstate);  lineno++;
-        fprintf(out,"const int YYNRULE = %d;\n",lemp->nrule);  lineno++;
-        fprintf(out,"const int YYERRORSYMBOL = %d;\n", lemp->errsym->useCnt ?
-                lemp->errsym->index : -1);  lineno++;
+        fprintf(out,"const int YYNSTATE = %d;\n",stateCount);  lineno++;
+        fprintf(out,"const int YYNRULE = %d;\n",ruleCount);  lineno++;
+        fprintf(out,"const int YYERRORSYMBOL = %d;\n", errorSymbolNumber);  lineno++;
     } else if (language == LANG_RUST) {
+        /* Rust language. */
         
+        /* 
+         * Emit the type definitions for:
+         *   CodeNumber, ActionNumber.
+         *   CODE_NUMBER_NONE.
+         *   ACTION_NUMBER_NONE, ACTION_NUMBER_ACCEPT, ACTION_NUMBER_ERROR, ACTION_NUMBER_WILDCARD.
+         *   STATE_COUNT, RULE_COUNT, ERROR_SYMBOL.
+         */
+        lineno = ReportRustWriteTypeDefinitions(lineno, out, codeTypeMinimumSizeType, codeNumberNoneValue, actionTypeMinimumSizeType, wildcardNumber, stateCount, ruleCount, errorSymbolNumber);
+        
+        /* Output the minor union. */
+        print_stack_union(out,lemp,&lineno,mhflag);
     } else {
         /* C and C++ languages. */
-        fprintf(out,"#define YYCODETYPE %s\n",
-                minimum_size_type(0, lemp->nsymbol+5)); lineno++;
-        fprintf(out,"#define YYNOCODE %d\n",lemp->nsymbol+1);  lineno++;
-        fprintf(out,"#define YYACTIONTYPE %s\n",
-                minimum_size_type(0, lemp->nstate+lemp->nrule+5));  lineno++;
-        if( lemp->wildcard ){
-            fprintf(out,"#define YYWILDCARD %d\n",
-                    lemp->wildcard->index); lineno++;
+        fprintf(out,"#define YYCODETYPE %s\n", codeTypeMinimumSizeType); lineno++;
+        fprintf(out,"#define YYNOCODE %d\n",codeNumberNoneValue);  lineno++;
+        fprintf(out,"#define YYACTIONTYPE %s\n", actionTypeMinimumSizeType);  lineno++;
+        if( wildcardNumber > 0 ){
+            fprintf(out,"#define YYWILDCARD %d\n", wildcardNumber); lineno++;
         }
         print_stack_union(out,lemp,&lineno,mhflag);
         fprintf(out, "#ifndef YYSTACKDEPTH\n"); lineno++;
@@ -1069,9 +1086,9 @@ void ReportTable(
         if( mhflag ){
             fprintf(out,"#endif\n"); lineno++;
         }
-        fprintf(out,"#define YYNSTATE %d\n",lemp->nstate);  lineno++;
-        fprintf(out,"#define YYNRULE %d\n",lemp->nrule);  lineno++;
-        if( lemp->errsym->useCnt ){
+        fprintf(out,"#define YYNSTATE %d\n",stateCount);  lineno++;
+        fprintf(out,"#define YYNRULE %d\n",ruleCount);  lineno++;
+        if( errorSymbolNumber > 0 ){
             fprintf(out,"#define YYERRORSYMBOL %d\n",lemp->errsym->index);  lineno++;
             fprintf(out,"#define YYERRSYMDT yy%d\n",lemp->errsym->dtnum);  lineno++;
         }
@@ -1147,11 +1164,19 @@ void ReportTable(
     free(ax);
     
     /* Output the yy_action table */
-    if (language == LANG_D)
+    if (language == LANG_D) {
         fprintf(out,"private static const YYACTIONTYPE yy_action[] = [\n");
-        else
-            fprintf(out,"static const YYACTIONTYPE yy_action[] = {\n");
-            lineno++;
+        lineno++;
+    } else if (language == LANG_RUST) {
+        fprintf(out, "const ACTION_TABLE_LEN: usize = %d\n", acttab_size(pActtab));
+        fprintf(out, "const const ACTION_TABLE: [ActionNumber; ACTION_TABLE_LEN] = [\n");
+        lineno += 2;
+    } else {
+        /* C and C++ Languages. */
+        fprintf(out,"static const YYACTIONTYPE yy_action[] = {\n");
+        lineno++;
+    }
+    
     n = acttab_size(pActtab);
     for(i=j=0; i<n; i++){
         int action = acttab_yyaction(pActtab, i);
@@ -1165,18 +1190,30 @@ void ReportTable(
             j++;
         }
     }
-    if (language == LANG_D)
+    
+    if (language == LANG_D || language == LANG_RUST) {
+        /* Rust and D Languages. */
         fprintf(out, "];\n");
-        else
-            fprintf(out, "};\n");
-            lineno++;
+        ++lineno;
+    } else {
+        /* C and C++ Languages. */
+        fprintf(out, "};\n");
+        ++lineno;
+    }
     
     /* Output the yy_lookahead table */
-    if (language == LANG_D)
-        fprintf(out,"private static const YYCODETYPE yy_lookahead[] = [\n");
-        else
-            fprintf(out,"static const YYCODETYPE yy_lookahead[] = {\n");
-            lineno++;
+    if (language == LANG_D) {
+        fprintf(out, "private static const YYCODETYPE yy_lookahead[] = [\n");
+        ++lineno;
+    } else if (language == LANG_RUST) {
+        fprintf(out, "const LOOKAHEAD_TABLE: [CodeNumber; ACTION_TABLE_LEN] = [\n");
+        ++lineno;
+    } else {
+        /* C and C++ Languages. */
+        fprintf(out,"static const YYCODETYPE yy_lookahead[] = {\n");
+        ++lineno;
+    }
+    
     for(i=j=0; i<n; i++){
         int la = acttab_yylookahead(pActtab, i);
         if( la<0 ) la = lemp->nsymbol;
@@ -1189,11 +1226,16 @@ void ReportTable(
             j++;
         }
     }
-    if (language == LANG_D)
+    
+    if (language == LANG_D || language == LANG_RUST) {
+        /* Rust and D Languages. */
         fprintf(out, "];\n");
-        else
-            fprintf(out, "};\n");
-            lineno++;
+        ++lineno;
+    } else {
+        /* C and C++ Languages. */
+        fprintf(out, "};\n");
+        ++lineno;
+    }
     
     /* Output the yy_shift_ofst[] table */
     if (language == LANG_D)

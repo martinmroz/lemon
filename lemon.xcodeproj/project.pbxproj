@@ -161,7 +161,7 @@
 		FD3D17F21ABDFFEF005BE139 /* Project object */ = {
 			isa = PBXProject;
 			attributes = {
-				LastUpgradeCheck = 0610;
+				LastUpgradeCheck = 0620;
 				ORGANIZATIONNAME = "Martin Mroz";
 				TargetAttributes = {
 					FD3D17F91ABDFFEF005BE139 = {
@@ -287,7 +287,6 @@
 		FD3D18021ABDFFEF005BE139 /* Debug */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
-				ARCHS = "$(ARCHS_STANDARD)";
 				PRODUCT_NAME = "$(TARGET_NAME)";
 			};
 			name = Debug;
@@ -295,7 +294,6 @@
 		FD3D18031ABDFFEF005BE139 /* Release */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
-				ARCHS = "$(ARCHS_STANDARD)";
 				PRODUCT_NAME = "$(TARGET_NAME)";
 			};
 			name = Release;

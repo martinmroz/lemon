@@ -38,4 +38,8 @@ int ReportRustWriteTokenMinorDeclaration(char *const inputFilename, int inputLin
  */
 int ReportRustWriteTokenMajorDeclaration(int lineno, FILE* fp, char *const prefix, struct symbol **symbols, int const terminalCount);
 
+/**
+ */
+int ReportRustWriteTypeDefinitions(int lineno, FILE* fp, char const *codeTypeMinimumSizeType, int const codeNumberNoneValue, char const *actionTypeMinimumSizeType, int const wildcardNumber, int const stateCount, int const ruleCount, int const errorSymbolNumber);
+
 #endif /* defined(__lemon_report_rust__) */

@@ -4,7 +4,8 @@
 use std::io;
 use std::rc::Rc;
 
-/* Section: %include{} */
+/* Section: %include */
+
 %%
 
 /* 
@@ -15,24 +16,10 @@ use std::rc::Rc;
  *
  * Each symbol here is a terminal symbol in the grammar.
  */
-pub type ParseTokenType = i32;
-enum TokenMinor {
-    YYInvalidToken,
-    YY0(ParseTokenType),
-}
 
-pub type TokenMajor = CodeNumber;
-pub mod token {
-    use super::TokenMajor;
-    
-    /* Numerical value of each major terminal token. */
-    pub const __RESERVED_EOF__: TokenMajor = 0;
-    pub const PLUS: TokenMajor = 1;
-    pub const MINUS: TokenMajor = 2;
-    pub const DIVIDE: TokenMajor = 3;
-    pub const TIMES: TokenMajor = 4;
-    pub const INTEGER: TokenMajor = 5;
-}
+/* Section: Major token definitions. */
+
+%%
 
 /*
  *    CodeNumber             is the data type used for storing terminal and nonterminal numbers. 
@@ -57,18 +44,10 @@ pub mod token {
  *                           which is Token.  The entry in the union
  *                           for base tokens is called "YY0".
  */ 
-type CodeNumber = usize;
-const CODE_NUMBER_NONE: CodeNumber = 10;
 
-type ActionNumber = usize;
-const ACTION_NUMBER_WILDCARD: Option<ActionNumber> = None;
-const ACTION_NUMBER_NONE: ActionNumber = STATE_COUNT + RULE_COUNT + 2;
-const ACTION_NUMBER_ACCEPT: ActionNumber = STATE_COUNT + RULE_COUNT + 1;
-const ACTION_NUMBER_ERROR: ActionNumber = STATE_COUNT + RULE_COUNT;
+/* Section: Type definitions including minor token type enum. */
 
-const STATE_COUNT: usize = 11;
-const RULE_COUNT: usize = 6;
-const ERROR_SYMBOL: Option<usize> = None;
+%%
 
 /* 
  * Next are that tables used to determine what action to take based on the
@@ -122,7 +101,7 @@ const ACTION_TABLE: [ActionNumber; ACTION_TABLE_LEN] = [
 /*     0 */    11,    4,    2,    3,    1,    3,    1,    6,   18,    5,
 /*    10 */    10,    9,    8,   19,    7,
 ];
-const LOOKAHEAD_TABLE: [CodeNumber; 15] = [
+const LOOKAHEAD_TABLE: [CodeNumber; ACTION_TABLE_LEN] = [
 /*     0 */     0,    1,    2,    3,    4,    3,    4,    8,    7,    8,
 /*    10 */     5,    8,    8,    9,    8,
 ];
