@@ -45,16 +45,20 @@ PRIVATE char *file_makename(struct lemon *lemp, char *suffix)
  ** to the stream */
 PRIVATE FILE *file_open(struct lemon *lemp, char *suffix, char *mode)
 {
-    FILE *fp;
+    FILE *fp = NULL;
     
-    if( lemp->outname ) free(lemp->outname);
-        lemp->outname = file_makename(lemp, suffix);
-        fp = fopen(lemp->outname,mode);
-        if( fp==0 && *mode=='w' ){
-            ErrorMsg(lemp->filename, LINENO_NONE, "Can't open file \"%s\".\n",lemp->outname);
-            lemp->errorcnt++;
-            return 0;
-        }
+    if( lemp->outname != NULL ) {
+        free(lemp->outname);
+    }
+    
+    lemp->outname = file_makename(lemp, suffix);
+    fp = fopen(lemp->outname,mode);
+    if( fp==NULL && *mode=='w' ){
+        ErrorMsg(lemp->filename, LINENO_NONE, "Can't open file \"%s\".\n",lemp->outname);
+        lemp->errorcnt++;
+        return NULL;
+    }
+    
     return fp;
 }
 
@@ -978,7 +982,7 @@ void ReportTable(
     }
     tplt_xfer(lemp->name,in,out,&lineno);
     
-    /* Generate #defines for all tokens */
+    /* Generate definitions for all tokens. */
     if (language == LANG_D) {
         char *prefix = lemp->tokenprefix ? lemp->tokenprefix : "";
         for(i=1; i<lemp->nterminal; i++){
@@ -987,10 +991,7 @@ void ReportTable(
         }
     } else if (language == LANG_RUST) {
         char *prefix = lemp->tokenprefix ? lemp->tokenprefix : "";
-        for(i=1; i<lemp->nterminal; i++){
-            fprintf (out, "pub const %s%-30s: TokenMajor = %2d;\n", prefix, lemp->symbols[i]->name, i);
-            lineno++;
-        }
+        lineno = ReportRustWriteTokenMajorDeclaration(lineno, out, prefix, lemp->symbols, lemp->nterminal);
     } else if (mhflag) {
         char *prefix;
         fprintf(out,"#if INTERFACE\n"); lineno++;
