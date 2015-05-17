@@ -1237,66 +1237,106 @@ void ReportTable(
         ++lineno;
     }
     
-    /* Output the yy_shift_ofst[] table */
-    if (language == LANG_D)
+    /* Output the YY_SHIFT_USE_DFLT value. */
+    if (language == LANG_D) {
         fprintf(out, "const int YY_SHIFT_USE_DFLT = %d;\n", mnTknOfst-1);
-        else
-            fprintf(out, "#define YY_SHIFT_USE_DFLT (%d)\n", mnTknOfst-1);
-            lineno++;
+        ++lineno;
+    } else if (language == LANG_RUST) {
+        fprintf(out, "const SHIFT_USE_DEFAULT: i32 = %d;\n", mnTknOfst-1);
+        ++lineno;
+    } else {
+        /* C and C++ Languages. */
+        fprintf(out, "#define YY_SHIFT_USE_DFLT (%d)\n", mnTknOfst-1);
+        ++lineno;
+    }
+    
+    /* Output the YY_SHIFT_MAX value. */
     n = lemp->nstate;
     while( n>0 && lemp->sorted[n-1]->iTknOfst==NO_OFFSET ) n--;
-    if (language == LANG_D)
+    if (language == LANG_D) {
         fprintf(out, "const int YY_SHIFT_MAX = %d;\n", n-1);
-        else
-            fprintf(out, "#define YY_SHIFT_MAX %d\n", n-1);
-            lineno++;
-    if (language == LANG_D)
-        fprintf(out, "private static const %s yy_shift_ofst[] = [\n",
-                minimum_size_type(mnTknOfst-1, mxTknOfst));
-        else
-            fprintf(out, "static const %s yy_shift_ofst[] = {\n",
-                    minimum_size_type(mnTknOfst-1, mxTknOfst));
-            lineno++;
+        ++lineno;
+    } else if (language == LANG_RUST) {
+        fprintf(out, "const SHIFT_MAX: i32 = %d;\n", n-1);
+        ++lineno;
+    } else {
+        /* C and C++ Languages. */
+        fprintf(out, "#define YY_SHIFT_MAX %d\n", n-1);
+        ++lineno;
+    }
+    
+    /* Output the yy_shift_ofst[] table. */
+    char const* shiftOffsetMinimumSizeType = minimum_size_type(mnTknOfst-1, mxTknOfst);
+    if (language == LANG_D) {
+        fprintf(out, "private static const %s yy_shift_ofst[] = [\n", shiftOffsetMinimumSizeType);
+        ++lineno;
+    } else if (language == LANG_RUST) {
+        fprintf(out, "const SHIFT_OFFSETS: [%s; %d] = [\n", shiftOffsetMinimumSizeType, n);
+        ++lineno;
+    } else {
+        /* C and C++ Languages. */
+        fprintf(out, "static const %s yy_shift_ofst[] = {\n", shiftOffsetMinimumSizeType);
+        ++lineno;
+    }
+    
     for(i=j=0; i<n; i++){
         int ofst;
         stp = lemp->sorted[i];
         ofst = stp->iTknOfst;
-        if( ofst==NO_OFFSET ) ofst = mnTknOfst - 1;
-        if( j==0 ) fprintf(out," /* %5d */ ", i);
+        if( ofst==NO_OFFSET ) { ofst = mnTknOfst - 1; }
+        if( j==0 ) { fprintf(out," /* %5d */ ", i); }
         fprintf(out, " %4d,", ofst);
         if( j==9 || i==n-1 ){
             fprintf(out, "\n"); lineno++;
             j = 0;
-        }else{
+        } else {
             j++;
         }
     }
-    if (language == LANG_D)
-        fprintf(out, "];\n");
-        else
-            fprintf(out, "};\n");
-            lineno++;
     
-    /* Output the yy_reduce_ofst[] table */
-    if (language == LANG_D)
+    if (language == LANG_D || language == LANG_RUST) {
+        /* Rust and D Languages. */
+        fprintf(out, "];\n");
+        ++lineno;
+    } else {
+        /* C and C++ Languages. */
+        fprintf(out, "};\n");
+        ++lineno;
+    }
+    
+    /* Output the YY_REDUCE_USE_DFLT value. */
+    if (language == LANG_D) {
         fprintf(out, "const int YY_REDUCE_USE_DFLT = %d;\n", mnNtOfst-1);
-        else
-            fprintf(out, "#define YY_REDUCE_USE_DFLT (%d)\n", mnNtOfst-1);
-            lineno++;
+        ++lineno;
+    } else if (language == LANG_RUST) {
+        fprintf(out, "const REDUCE_USE_DEFAULT: i32 = %d;\n", mnTknOfst-1);
+        ++lineno;
+    } else {
+        /* C and C++ Languages. */
+        fprintf(out, "#define YY_REDUCE_USE_DFLT (%d)\n", mnNtOfst-1);
+        ++lineno;
+    }
+    
+    /* Output the YY_REDUCE_MAX value and the yy_reduce_ofst[] table. */
     n = lemp->nstate;
     while( n>0 && lemp->sorted[n-1]->iNtOfst==NO_OFFSET ) n--;
-    if (language == LANG_D)
+    
+    char const* reduceOffsetMinimumSizeType = minimum_size_type(mnNtOfst-1, mxNtOfst);
+    if (language == LANG_D) {
         fprintf(out, "const int YY_REDUCE_MAX = %d;\n", n-1);
-        else
-            fprintf(out, "#define YY_REDUCE_MAX %d\n", n-1);
-            lineno++;
-    if (language == LANG_D)
-        fprintf(out, "private static const %s yy_reduce_ofst[] = [\n",
-                minimum_size_type(mnNtOfst-1, mxNtOfst));
-        else
-            fprintf(out, "static const %s yy_reduce_ofst[] = {\n",
-                    minimum_size_type(mnNtOfst-1, mxNtOfst));
-            lineno++;
+        fprintf(out, "private static const %s yy_reduce_ofst[] = [\n", reduceOffsetMinimumSizeType);
+        lineno += 2;
+    } else if (language == LANG_RUST) {
+        fprintf(out, "const REDUCE_MAX: i32 = %d;\n", n-1);
+        fprintf(out, "const REDUCE_OFFSETS: [%s; %d] = [\n", reduceOffsetMinimumSizeType, n);
+        lineno += 2;
+    } else {
+        /* C and C++ Languages. */
+        fprintf(out, "#define YY_REDUCE_MAX %d\n", n-1);
+        fprintf(out, "static const %s yy_reduce_ofst[] = {\n", reduceOffsetMinimumSizeType);
+        lineno += 2;
+    }
+    
     for(i=j=0; i<n; i++){
         int ofst;
         stp = lemp->sorted[i];
@@ -1311,18 +1351,30 @@ void ReportTable(
             j++;
         }
     }
-    if (language == LANG_D)
+    
+    if (language == LANG_D || language == LANG_RUST) {
+        /* Rust and D Languages. */
         fprintf(out, "];\n");
-        else
-            fprintf(out, "};\n");
-            lineno++;
+        ++lineno;
+    } else {
+        /* C and C++ Languages. */
+        fprintf(out, "};\n");
+        ++lineno;
+    }
     
     /* Output the default action table */
-    if (language == LANG_D)
+    if (language == LANG_D) {
         fprintf(out, "private static const YYACTIONTYPE yy_default[] = [\n");
-        else
-            fprintf(out, "static const YYACTIONTYPE yy_default[] = {\n");
-            lineno++;
+        ++lineno;
+    } else if (language == LANG_RUST) {
+        fprintf(out, "const DEFAULT_ACTION_TABLE: [ActionNumber; %d] = [\n", lemp->nstate);
+        ++lineno;
+    } else {
+        /* C and C++ Languages. */
+        fprintf(out, "static const YYACTIONTYPE yy_default[] = {\n");
+        ++lineno;
+    }
+
     n = lemp->nstate;
     for(i=j=0; i<n; i++){
         stp = lemp->sorted[i];
@@ -1335,50 +1387,91 @@ void ReportTable(
             j++;
         }
     }
-    if (language == LANG_D)
+    
+    if (language == LANG_D || language == LANG_RUST) {
+        /* Rust and D Languages. */
         fprintf(out, "];\n");
-        else
-            fprintf(out, "};\n");
-            lineno++;
+        ++lineno;
+    } else {
+        /* C and C++ Languages. */
+        fprintf(out, "};\n");
+        ++lineno;
+    }
+    
     tplt_xfer(lemp->name,in,out,&lineno);
     
     /* Generate the table of fallback tokens.
      */
+    if (language == LANG_RUST) {
+        int const numberOfFallbackTokens = lemp->has_fallback ? lemp->nterminal : 0;
+        fprintf(out, "const FALLBACK_CODE_TABLE: [CodeNumber; %d] = [\n", numberOfFallbackTokens);
+        ++lineno;
+    }
+    
     if( lemp->has_fallback ){
         for(i=0; i<lemp->nterminal; i++){
             struct symbol *p = lemp->symbols[i];
             if( p->fallback==0 ){
                 fprintf(out, "    0,  /* %10s => nothing */\n", p->name);
             }else{
-                fprintf(out, "  %3d,  /* %10s => %s */\n", p->fallback->index,
-                        p->name, p->fallback->name);
+                fprintf(out, "  %3d,  /* %10s => %s */\n", p->fallback->index, p->name, p->fallback->name);
             }
             lineno++;
         }
     }
+    
+    if (language == LANG_RUST) {
+        fprintf(out, "];\n");
+        ++lineno;
+    }
+    
     tplt_xfer(lemp->name, in, out, &lineno);
     
     /* Generate a table containing the symbolic name of every symbol
      */
+    if (language == LANG_RUST) {
+        fprintf(out, "const TOKEN_NAMES: [&'static str; %d] = [\n", lemp->nsymbol);
+        ++lineno;
+    }
+    
     for(i=0; i<lemp->nsymbol; i++){
         sprintf(line,"\"%s\",",lemp->symbols[i]->name);
         fprintf(out,"  %-15s",line);
         if( (i&3)==3 ){ fprintf(out,"\n"); lineno++; }
     }
     if( (i&3)!=0 ){ fprintf(out,"\n"); lineno++; }
+    
+    if (language == LANG_RUST) {
+        fprintf(out, "];\n");
+        ++lineno;
+    }
+    
     tplt_xfer(lemp->name,in,out,&lineno);
     
     /* Generate a table containing a text string that describes every
      ** rule in the rule set of the grammer.  This information is used
      ** when tracing REDUCE actions.
      */
+    if (language == LANG_RUST) {
+        fprintf(out, "const RULE_NAMES: [&'static str; %d] = [\n", lemp->nrule);
+        ++lineno;
+    }
+    
     for(i=0, rp=lemp->rule; rp; rp=rp->next, i++){
         assert( rp->index==i );
         fprintf(out," /* %3d */ \"", i);
         writeRuleText(out, rp);
         fprintf(out,"\",\n"); lineno++;
     }
+    
+    if (language == LANG_RUST) {
+        fprintf(out, "];\n");
+        ++lineno;
+    }
+    
     tplt_xfer(lemp->name,in,out,&lineno);
+    
+    // TODO: mm: Implement token destructors for rust.
     
     /* Generate code which executes every time a symbol is popped from
      ** the stack while processing errors or while destroying the parser.

@@ -4,8 +4,7 @@
 use std::io;
 use std::rc::Rc;
 
-/* Section: %include */
-
+/* Includes section. */
 %%
 
 /* 
@@ -16,9 +15,6 @@ use std::rc::Rc;
  *
  * Each symbol here is a terminal symbol in the grammar.
  */
-
-/* Section: Major token definitions. */
-
 %%
 
 /*
@@ -44,9 +40,6 @@ use std::rc::Rc;
  *                           which is Token.  The entry in the union
  *                           for base tokens is called "YY0".
  */ 
-
-/* Section: Type definitions including minor token type enum. */
-
 %%
 
 /* 
@@ -96,29 +89,7 @@ use std::rc::Rc;
  *                          shifting non-terminals after a reduce.
  *  DEFAULT_ACTION_TABLE[]  Default action for each state.
  */
-const ACTION_TABLE_LEN: usize = 15;
-const ACTION_TABLE: [ActionNumber; ACTION_TABLE_LEN] = [
-/*     0 */    11,    4,    2,    3,    1,    3,    1,    6,   18,    5,
-/*    10 */    10,    9,    8,   19,    7,
-];
-const LOOKAHEAD_TABLE: [CodeNumber; ACTION_TABLE_LEN] = [
-/*     0 */     0,    1,    2,    3,    4,    3,    4,    8,    7,    8,
-/*    10 */     5,    8,    8,    9,    8,
-];
-const SHIFT_USE_DEFAULT: i32 = -1;
-const SHIFT_MAX: i32 = 7;
-const SHIFT_OFFSETS: [i32; 8] = [
-/*     0 */     5,    5,    5,    5,    5,    0,    2,    2,
-];
-const REDUCE_USE_DEFAULT: i32 = -2;
-const REDUCE_MAX: i32 = 4;
-const REDUCE_OFFSETS: [i32; 5] = [
-/*     0 */     1,    4,    6,    3,   -1,
-];
-const DEFAULT_ACTION_TABLE: [ActionNumber; 11]  = [
-/*     0 */    17,   17,   17,   17,   17,   17,   13,   12,   14,   15,
-/*    10 */    16,
-];
+%%
 
 /* 
  * This table maps tokens into fallback tokens.  If a construct like the following:
@@ -130,8 +101,7 @@ const DEFAULT_ACTION_TABLE: [ActionNumber; 11]  = [
  * but it does not parse, the type of the token is changed to ID and
  * the parse is retried before an error is thrown.
  */
-const FALLBACK_CODE_TABLE: [CodeNumber; 0] = [
-];
+%%
 
 /* 
  * The following structure represents a single element of the
@@ -159,6 +129,17 @@ struct StackEntry {
 }
 
 /* 
+ * For tracing shifts, the names of all terminals and nonterminals
+ * are required, as defined below.
+ */
+%%
+
+/* 
+ * For tracing reduce actions, the names of all rules are required.
+ */
+%%
+
+/* 
  * This table contains information about every rule that is used during the reduce step.
  */
 struct RuleInfo {
@@ -169,37 +150,6 @@ struct RuleInfo {
     /* Number of right-hand side symbols in the rule */
     rhs_count: u8
 }
-
-const RULE_INFO_LIST: [RuleInfo; 6] = [
-    RuleInfo { lhs: 7, rhs_count: 1 },
-    RuleInfo { lhs: 8, rhs_count: 3 },
-    RuleInfo { lhs: 8, rhs_count: 3 },
-    RuleInfo { lhs: 8, rhs_count: 3 },
-    RuleInfo { lhs: 8, rhs_count: 3 },
-    RuleInfo { lhs: 8, rhs_count: 1 },
-];
-
-/* 
- * For tracing shifts, the names of all terminals and nonterminals
- * are required, as defined below.
- */
-const TOKEN_NAMES: [&'static str; 9] = [
-    "$",             "PLUS",          "MINUS",         "DIVIDE",      
-    "TIMES",         "INTEGER",       "error",         "program",     
-    "expr",        
-];
-
-/* 
- * For tracing reduce actions, the names of all rules are required.
- */
-const RULE_NAMES: [&'static str; 6] = [
-/*   0 */ "program ::= expr",
-/*   1 */ "expr ::= expr MINUS expr",
-/*   2 */ "expr ::= expr PLUS expr",
-/*   3 */ "expr ::= expr TIMES expr",
-/*   4 */ "expr ::= expr DIVIDE expr",
-/*   5 */ "expr ::= INTEGER",
-];
 
 /* 
  * The state of the parser is completely contained in an instance of
@@ -302,6 +252,7 @@ impl Parser {
              * which appear on the RHS of the rule, but which are not used
              * inside the Rust code.
              */
+            %%
             _ => {
                 /* If no destructor action specified: do nothing */
             }
@@ -726,3 +677,12 @@ impl Drop for Parser {
         }
     }
 }
+
+const RULE_INFO_LIST: [RuleInfo; 6] = [
+    RuleInfo { lhs: 7, rhs_count: 1 },
+    RuleInfo { lhs: 8, rhs_count: 3 },
+    RuleInfo { lhs: 8, rhs_count: 3 },
+    RuleInfo { lhs: 8, rhs_count: 3 },
+    RuleInfo { lhs: 8, rhs_count: 3 },
+    RuleInfo { lhs: 8, rhs_count: 1 },
+];
