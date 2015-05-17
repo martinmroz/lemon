@@ -11,34 +11,30 @@
 #include "error.h"
 
 
-int ReportRustWriteTokenMajorDeclaration(char *const inputFilename, int inputLineno, int lineno, FILE* fp, char* const tokenType)
+int ReportRustWriteTokenMinorDeclaration(char *const inputFilename, int inputLineno, int lineno, FILE* fp, char* const tokenType, char* const* types, int typeCount, int hasErrorSymbol, int errorDataTypeNumber)
 {
     char *localTokenTypeName = NULL;
     if (tokenType && strlen(tokenType) > 0) {
         localTokenTypeName = tokenType;
     } else {
-        LogMsg(LOGLEVEL_WARNING, inputFilename, inputLineno, "No token type specified; in Rust, this is required. Defaulting to 'i32'.");
+        LogMsg(LOGLEVEL_WARNING, inputFilename, inputLineno, "No token type specified; in Rust, this is required. Use the %token_type directive to do so. Defaulting to 'i32'.");
         localTokenTypeName = "i32";
     }
-
-    fprintf(fp,"type TokenMajor = %s;\n", localTokenTypeName);
+    
+    fprintf(fp,"pub type ParseTokenType = %s;\n", localTokenTypeName);
     ++lineno;
-    return lineno;
-}
-
-int ReportRustWriteTokenMinorDeclaration(char *const inputFilename, int inputLineno, int lineno, FILE* fp, char* const* types, int typeCount, int hasErrorSymbol, int errorDataTypeNumber)
-{
+    
     /* 
      * Unlike other languages, Rust has no concept of a union (due to inherent lack of safety).
      * As a result, the token minor type is an enumeration with associated values, which are 
      * destructured as part of the reduce step.
      */
-    fprintf(fp, "pub enum TokenMinor {\n");
+    fprintf(fp, "enum TokenMinor {\n");
     ++lineno;
 
     /* Emit the required yy0 base token. */
     fprintf(fp, "  YYInvalidToken,");
-    fprintf(fp, "  YY0(i32),\n");
+    fprintf(fp, "  YY0(ParseTokenType),\n");
     lineno += 2;
 
     /* Emit all user defined tokens. */

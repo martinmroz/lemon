@@ -4,6 +4,9 @@
 use std::io;
 use std::rc::Rc;
 
+/* Section: %include{} */
+%%
+
 /* 
  * This section comprises all token values.
  *
@@ -13,12 +16,12 @@ use std::rc::Rc;
  * Each symbol here is a terminal symbol in the grammar.
  */
 pub type ParseTokenType = i32;
-pub type TokenMajor = CodeNumber;
-pub enum TokenMinor {
+enum TokenMinor {
     YYInvalidToken,
     YY0(ParseTokenType),
 }
 
+pub type TokenMajor = CodeNumber;
 pub mod token {
     use super::TokenMajor;
     
@@ -53,7 +56,7 @@ pub mod token {
  *                           This is typically a union of many types, one of
  *                           which is Token.  The entry in the union
  *                           for base tokens is called "YY0".
- */
+ */ 
 type CodeNumber = usize;
 const CODE_NUMBER_NONE: CodeNumber = 10;
 

@@ -756,8 +756,7 @@ void print_stack_union(
         /* 
          * Rust language. 
          */
-        lineno = ReportRustWriteTokenMajorDeclaration(lemp->filename, LINENO_NONE, lineno, out, lemp->tokentype);
-        lineno = ReportRustWriteTokenMinorDeclaration(lemp->filename, LINENO_NONE, lineno, out, types, arraysize, hasErrorSymbol, errorDataTypeNumber);
+        lineno = ReportRustWriteTokenMinorDeclaration(lemp->filename, LINENO_NONE, lineno, out, lemp->tokentype, types, arraysize, hasErrorSymbol, errorDataTypeNumber);
     } else if (language == LANG_D) {
         /* 
          * D language. 
