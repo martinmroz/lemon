@@ -494,7 +494,7 @@ int has_destructor(struct symbol *sp, struct lemon *lemp)
  */
 PRIVATE char *append_str(char *zText, int n, int p1, int p2){
     static char *z = 0;
-    static int alloced = 0;
+    static size_t alloced = 0;
     static int used = 0;
     int c;
     char zInt[40];

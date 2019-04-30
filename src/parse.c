@@ -481,7 +481,8 @@ static void parseonetoken(struct pstate *psp)
  ** comments them out.  Text in between is also commented out as appropriate.
  */
 static void preprocess_input(char *z){
-    int i, j, k, n;
+    int i, j, k;
+    size_t n;
     int exclude = 0;
     int start = 0;
     int lineno = 1;
@@ -536,7 +537,7 @@ void Parse(struct lemon *gp)
     struct pstate ps;
     FILE *fp;
     char *filebuf;
-    int filesize;
+    size_t filesize;
     int lineno;
     int c;
     char *cp, *nextcp;
