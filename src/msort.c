@@ -7,6 +7,7 @@
  *  See LICENSE for additional information.
  */
 
+#include <stddef.h>
 #include "msort.h"
 
 /*
