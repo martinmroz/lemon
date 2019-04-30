@@ -1,3 +1,7 @@
+*.o
+lemon
+lemon.exe
+
 # Xcode
 #
 build/
