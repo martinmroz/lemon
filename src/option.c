@@ -206,7 +206,7 @@ int OptInit(char **a, struct s_options *o, FILE *err)
     return 0;
 }
 
-int OptNArgs(){
+int OptNArgs(void){
     int cnt = 0;
     int dashdash = 0;
     int i;
@@ -233,7 +233,7 @@ void OptErr(int n)
     if( i>=0 ) errline(i,0,errstream);
 }
 
-void OptPrint(){
+void OptPrint(void){
     int i;
     int max, len;
     max = 0;

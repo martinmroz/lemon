@@ -7,6 +7,7 @@
  *  See LICENSE for additional information.
  */
 
+#include <stddef.h>
 #include "msort.h"
 
 /*
@@ -54,7 +55,7 @@
  */
 static char *merge(char *a, char *b, msort_comparator cmp, ptrdiff_t offset){
     char *ptr, *head;
-    
+
     if( a==0 ){
         head = b;
     }else if( b==0 ){

@@ -22,7 +22,7 @@ void SetSize(int n)
 }
 
 /* Allocate a new set */
-char *SetNew(){
+char *SetNew(void){
     char *s;
     s = (char*)calloc( size, 1);
     if( s==0 ){

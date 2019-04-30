@@ -35,7 +35,7 @@ PRIVATE int strhash(char *x)
 char *Strsafe(char *y)
 {
     char *z;
-    
+
     if( y==0 ) return 0;
     z = Strsafe_find(y);
     if( z==0 && (z=malloc( strlen(y)+1 ))!=0 ){
@@ -71,7 +71,7 @@ typedef struct s_x1node {
 static struct s_x1 *x1a;
 
 /* Allocate a new associative array */
-void Strsafe_init(){
+void Strsafe_init(void){
     if( x1a ) return;
     x1a = (struct s_x1*)malloc( sizeof(struct s_x1) );
     if( x1a ){
@@ -96,7 +96,7 @@ int Strsafe_insert(char *data)
     x1node *np;
     int h;
     int ph;
-    
+
     if( x1a==0 ) return 0;
     ph = strhash(data);
     h = ph & (x1a->size-1);
@@ -151,7 +151,7 @@ char *Strsafe_find(char *key)
 {
     int h;
     x1node *np;
-    
+
     if( x1a==0 ) return 0;
     h = strhash(key) & (x1a->size-1);
     np = x1a->ht[h];
@@ -168,7 +168,7 @@ char *Strsafe_find(char *key)
 struct symbol *Symbol_new(char *x)
 {
     struct symbol *sp;
-    
+
     sp = Symbol_find(x);
     if( sp==0 ){
         sp = (struct symbol *)calloc(1, sizeof(struct symbol) );
@@ -232,7 +232,7 @@ typedef struct s_x2node {
 static struct s_x2 *x2a;
 
 /* Allocate a new associative array */
-void Symbol_init(){
+void Symbol_init(void){
     if( x2a ) return;
     x2a = (struct s_x2*)malloc( sizeof(struct s_x2) );
     if( x2a ){
@@ -257,7 +257,7 @@ int Symbol_insert(struct symbol *data, char *key)
     x2node *np;
     int h;
     int ph;
-    
+
     if( x2a==0 ) return 0;
     ph = strhash(key);
     h = ph & (x2a->size-1);
@@ -314,7 +314,7 @@ struct symbol *Symbol_find(char *key)
 {
     int h;
     x2node *np;
-    
+
     if( x2a==0 ) return 0;
     h = strhash(key) & (x2a->size-1);
     np = x2a->ht[h];
@@ -338,7 +338,7 @@ struct symbol *Symbol_Nth(int n)
 }
 
 /* Return the size of the array */
-int Symbol_count()
+int Symbol_count(void)
 {
     return x2a ? x2a->count : 0;
 }
@@ -346,7 +346,7 @@ int Symbol_count()
 /* Return an array of pointers to all data in the table.
  ** The array is obtained from malloc.  Return NULL if memory allocation
  ** problems, or if the array is empty. */
-struct symbol **Symbol_arrayof()
+struct symbol **Symbol_arrayof(void)
 {
     struct symbol **array;
     int i,size;
@@ -395,7 +395,7 @@ PRIVATE int statehash(struct config *a)
 }
 
 /* Allocate a new state structure */
-struct state *State_new()
+struct state *State_new(void)
 {
     struct state *new;
     new = (struct state *)calloc(1, sizeof(struct state) );
@@ -429,7 +429,7 @@ typedef struct s_x3node {
 static struct s_x3 *x3a;
 
 /* Allocate a new associative array */
-void State_init(){
+void State_init(void){
     if( x3a ) return;
     x3a = (struct s_x3*)malloc( sizeof(struct s_x3) );
     if( x3a ){
@@ -454,7 +454,7 @@ int State_insert(struct state *data, struct config *key)
     x3node *np;
     int h;
     int ph;
-    
+
     if( x3a==0 ) return 0;
     ph = statehash(key);
     h = ph & (x3a->size-1);
@@ -511,7 +511,7 @@ struct state *State_find(struct config *key)
 {
     int h;
     x3node *np;
-    
+
     if( x3a==0 ) return 0;
     h = statehash(key) & (x3a->size-1);
     np = x3a->ht[h];
@@ -525,7 +525,7 @@ struct state *State_find(struct config *key)
 /* Return an array of pointers to all data in the table.
  ** The array is obtained from malloc.  Return NULL if memory allocation
  ** problems, or if the array is empty. */
-struct state **State_arrayof()
+struct state **State_arrayof(void)
 {
     struct state **array;
     int i,size;
@@ -571,7 +571,7 @@ typedef struct s_x4node {
 static struct s_x4 *x4a;
 
 /* Allocate a new associative array */
-void Configtable_init(){
+void Configtable_init(void){
     if( x4a ) return;
     x4a = (struct s_x4*)malloc( sizeof(struct s_x4) );
     if( x4a ){
@@ -596,7 +596,7 @@ int Configtable_insert(struct config *data)
     x4node *np;
     int h;
     int ph;
-    
+
     if( x4a==0 ) return 0;
     ph = confighash(data);
     h = ph & (x4a->size-1);
@@ -651,7 +651,7 @@ struct config *Configtable_find(struct config *key)
 {
     int h;
     x4node *np;
-    
+
     if( x4a==0 ) return 0;
     h = confighash(key) & (x4a->size-1);
     np = x4a->ht[h];

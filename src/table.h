@@ -28,7 +28,7 @@
 
 /* Routines for handling a strings */
 
-char *Strsafe();
+char *Strsafe(char *y);
 
 void Strsafe_init(void);
 int Strsafe_insert(char *);
@@ -36,7 +36,7 @@ char *Strsafe_find(char *);
 
 /* Routines for handling symbols of the grammar */
 
-struct symbol *Symbol_new();
+struct symbol *Symbol_new(char *x);
 int Symbolcmpp(struct symbol **, struct symbol **);
 void Symbol_init(void);
 int Symbol_insert(struct symbol *, char *);

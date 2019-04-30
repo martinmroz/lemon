@@ -17,10 +17,10 @@
 #include "struct.h"
 #include "table.h"
 
-void FindRulePrecedences(struct lemon *xp)
+void FindRulePrecedences(struct lemon *lemp)
 {
     struct rule *rp;
-    for(rp=xp->rule; rp; rp=rp->next){
+    for(rp=lemp->rule; rp; rp=rp->next){
         if( rp->precsym==0 ){
             int i, j;
             for(i=0; i<rp->nrhs && rp->precsym==0; i++){
@@ -46,14 +46,14 @@ void FindFirstSets(struct lemon *lemp)
     int i, j;
     struct rule *rp;
     int progress;
-    
+
     for(i=0; i<lemp->nsymbol; i++){
         lemp->symbols[i]->lambda = LEMON_FALSE;
     }
     for(i=lemp->nterminal; i<lemp->nsymbol; i++){
         lemp->symbols[i]->firstset = SetNew();
     }
-    
+
     /* First compute all lambdas */
     do{
         progress = 0;
@@ -69,7 +69,7 @@ void FindFirstSets(struct lemon *lemp)
             }
         }
     }while( progress );
-    
+
     /* Now compute all first sets */
     do{
         struct symbol *s1, *s2;
@@ -98,15 +98,15 @@ void FindFirstSets(struct lemon *lemp)
     return;
 }
 
-PRIVATE struct state *getstate(/* struct lemon * */);  /* forward reference */
+PRIVATE struct state *getstate(struct lemon *lemp); /* forward reference */
 
 void FindStates(struct lemon *lemp)
 {
     struct symbol *sp;
     struct rule *rp;
-    
+
     Configlist_init();
-    
+
     /* Find the start symbol */
     if( lemp->start ){
         sp = Symbol_find(lemp->start);
@@ -121,7 +121,7 @@ void FindStates(struct lemon *lemp)
     }else{
         sp = lemp->rule->lhs;
     }
-    
+
     /* Make sure the start symbol doesn't occur on the right-hand side of
      ** any rule.  Report an error if it does.  (YACC would generate a new
      ** start symbol in this case.) */
@@ -137,7 +137,7 @@ void FindStates(struct lemon *lemp)
             }
         }
     }
-    
+
     /* The basis configuration set for the first state
      ** is all rules which have the start symbol as their
      ** left-hand side */
@@ -147,7 +147,7 @@ void FindStates(struct lemon *lemp)
         newcfp = Configlist_addbasis(rp,0);
         SetAdd(newcfp->fws,0);
     }
-    
+
     /* Compute the first state.  All other states will be
      ** computed automatically during the computation of the first one.
      ** The returned pointer to the first state is not used. */
@@ -163,12 +163,12 @@ PRIVATE struct state *getstate(struct lemon *lemp)
 {
     struct config *cfp, *bp;
     struct state *stp;
-    
+
     /* Extract the sorted basis of the new state.  The basis was constructed
      ** by prior calls to "Configlist_addbasis()". */
     Configlist_sortbasis();
     bp = Configlist_basis();
-    
+
     /* Get a state with the same basis */
     stp = State_find(bp);
     if( stp ){
@@ -203,9 +203,7 @@ PRIVATE struct state *getstate(struct lemon *lemp)
 /*
  ** Return true if two symbols are the same.
  */
-int same_symbol(a,b)
-struct symbol *a;
-struct symbol *b;
+int same_symbol(struct symbol *a, struct symbol *b)
 {
     int i;
     if( a==b ) return 1;
@@ -221,9 +219,9 @@ struct symbol *b;
 /* Construct all successor states to the given state.  A "successor"
  ** state is any state which can be reached by a shift action.
  */
-PRIVATE void buildshifts(lemp,stp)
-struct lemon *lemp;
-struct state *stp;     /* The state from which successors are computed */
+PRIVATE void buildshifts(
+    struct lemon *lemp,
+    struct state *stp)   /* The state from which successors are computed */
 {
     struct config *cfp;  /* For looping thru the config closure of "stp" */
     struct config *bcfp; /* For the inner loop on config closure of "stp" */
@@ -231,18 +229,18 @@ struct state *stp;     /* The state from which successors are computed */
     struct symbol *sp;   /* Symbol following the dot in configuration "cfp" */
     struct symbol *bsp;  /* Symbol following the dot in configuration "bcfp" */
     struct state *newstp; /* A pointer to a successor state */
-    
+
     /* Each configuration becomes complete after it contibutes to a successor
      ** state.  Initially, all configurations are incomplete */
     for(cfp=stp->cfp; cfp; cfp=cfp->next) cfp->status = INCOMPLETE;
-        
+
     /* Loop through all configurations of the state "stp" */
         for(cfp=stp->cfp; cfp; cfp=cfp->next){
             if( cfp->status==COMPLETE ) continue;    /* Already used by inner loop */
             if( cfp->dot>=cfp->rp->nrhs ) continue;  /* Can't shift this config */
             Configlist_reset();                      /* Reset the new config set */
             sp = cfp->rp->rhs[cfp->dot];             /* Symbol after the dot */
-            
+
             /* For every configuration in the state "stp" which has the symbol "sp"
              ** following its dot, add the same configuration to the basis set under
              ** construction but with the dot shifted one symbol to the right. */
@@ -255,11 +253,11 @@ struct state *stp;     /* The state from which successors are computed */
                 new = Configlist_addbasis(bcfp->rp,bcfp->dot+1);
                 Plink_add(&new->bplp,bcfp);
             }
-            
+
             /* Get a pointer to the state described by the basis configuration set
              ** constructed in the preceding loop */
             newstp = getstate(lemp);
-            
+
             /* The state "newstp" is reached from the state "stp" by a shift action
              ** on the symbol "sp" */
             if( sp->type==MULTITERMINAL ){
@@ -279,7 +277,7 @@ void FindLinks(struct lemon *lemp)
     struct config *cfp, *other;
     struct state *stp;
     struct plink *plp;
-    
+
     /* Housekeeping detail:
      ** Add to every propagate link a pointer back to the state to
      ** which the link is attached. */
@@ -289,7 +287,7 @@ void FindLinks(struct lemon *lemp)
             cfp->stp = stp;
         }
     }
-    
+
     /* Convert all backlinks into forward links.  Only the forward
      ** links are used in the follow-set computation. */
     for(i=0; i<lemp->nstate; i++){
@@ -310,13 +308,13 @@ void FindFollowSets(struct lemon *lemp)
     struct plink *plp;
     int progress;
     int change;
-    
+
     for(i=0; i<lemp->nstate; i++){
         for(cfp=lemp->sorted[i]->cfp; cfp; cfp=cfp->next){
             cfp->status = INCOMPLETE;
         }
     }
-    
+
     do{
         progress = 0;
         for(i=0; i<lemp->nstate; i++){
@@ -335,7 +333,10 @@ void FindFollowSets(struct lemon *lemp)
     }while( progress );
 }
 
-static int resolve_conflict();
+static int resolve_conflict(
+    struct action *apx,
+    struct action *apy,
+    struct symbol *errsym); /* forward reference */
 
 void FindActions(struct lemon *lemp)
 {
@@ -344,7 +345,7 @@ void FindActions(struct lemon *lemp)
     struct state *stp;
     struct symbol *sp;
     struct rule *rp;
-    
+
     /* Add all of the reduce actions
      ** A reduce action is added for each element of the followset of
      ** a configuration which has its dot at the extreme right.
@@ -363,7 +364,7 @@ void FindActions(struct lemon *lemp)
             }
         }
     }
-    
+
     /* Add the accepting token */
     if( lemp->start ){
         sp = Symbol_find(lemp->start);
@@ -375,7 +376,7 @@ void FindActions(struct lemon *lemp)
      ** finite state machine) an action to ACCEPT if the lookahead is the
      ** start nonterminal.  */
     Action_add(&lemp->sorted[0]->ap,ACCEPT,sp,0);
-    
+
     /* Resolve conflicts */
     for(i=0; i<lemp->nstate; i++){
         struct action *ap, *nap;
@@ -391,7 +392,7 @@ void FindActions(struct lemon *lemp)
             }
         }
     }
-    
+
     /* Report an error for each rule that can never be reduced. */
     for(rp=lemp->rule; rp; rp=rp->next) rp->canReduce = LEMON_FALSE;
         for(i=0; i<lemp->nstate; i++){
@@ -420,11 +421,12 @@ void FindActions(struct lemon *lemp)
  ** If either action is a SHIFT, then it must be apx.  This
  ** function won't work if apx->type==REDUCE and apy->type==SHIFT.
  */
-static int resolve_conflict(apx,apy,errsym)
-struct action *apx;
-struct action *apy;
-struct symbol *errsym;   /* The error symbol (if defined.  NULL otherwise) */
+static int resolve_conflict(
+    struct action *apx,
+    struct action *apy,
+    struct symbol *errsym)   /* The error symbol (NULL otherwise) */
 {
+    UNUSED_ARG(errsym);
     struct symbol *spx, *spy;
     int errcnt = 0;
     assert( apx->sp==apy->sp );  /* Otherwise there would be no conflict */

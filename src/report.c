@@ -26,7 +26,7 @@ PRIVATE char *file_makename(struct lemon *lemp, char *suffix)
 {
     char *name;
     char *cp;
-    
+
     name = malloc( strlen(lemp->filename) + strlen(suffix) + 5 );
     if( name==0 ){
         ErrorMsg("lemon", LINENO_NONE, "Can't allocate space for a filename.\n");
@@ -45,7 +45,7 @@ PRIVATE char *file_makename(struct lemon *lemp, char *suffix)
 PRIVATE FILE *file_open(struct lemon *lemp, char *suffix, char *mode)
 {
     FILE *fp;
-    
+
     if( lemp->outname ) free(lemp->outname);
         lemp->outname = file_makename(lemp, suffix);
         fp = fopen(lemp->outname,mode);
@@ -198,7 +198,7 @@ void ReportOutput(struct lemon *lemp)
     struct config *cfp;
     struct action *ap;
     FILE *fp;
-    
+
     fp = file_open(lemp,".out","wb");
     if( fp==0 ) return;
     for(i=0; i<lemp->nstate; i++){
@@ -235,7 +235,7 @@ void ReportOutput(struct lemon *lemp)
     for(i=0; i<lemp->nsymbol; i++){
         int j;
         struct symbol *sp;
-        
+
         sp = lemp->symbols[i];
         fprintf(fp, "  %3d: %s", i, sp->name);
         if( sp->type==NONTERMINAL ){
@@ -262,7 +262,7 @@ PRIVATE char *pathsearch(char *argv0, char *name, int modemask)
     char *pathlist;
     char *path,*cp;
     char c;
-    
+
 #ifdef __WIN32__
     cp = strrchr(argv0,'\\');
 #else
@@ -358,7 +358,7 @@ PRIVATE FILE *tplt_open(struct lemon *lemp)
     FILE *in;
     char *tpltname;
     char *cp;
-    
+
     cp = strrchr(lemp->filename,'.');
     if( cp ){
         sprintf(buf,"%.*s.lt",(int)(cp-lemp->filename),lemp->filename);
@@ -432,7 +432,7 @@ PRIVATE void tplt_print(FILE *out, struct lemon *lemp, char *str, int strln, int
 void emit_destructor_code(FILE *out, struct symbol *sp, struct lemon *lemp, int *lineno)
 {
     char *cp = 0;
-    
+
     int linecnt = 0;
     if( sp->type==TERMINAL ){
         cp = lemp->tokendest;
@@ -494,11 +494,11 @@ int has_destructor(struct symbol *sp, struct lemon *lemp)
  */
 PRIVATE char *append_str(char *zText, int n, int p1, int p2){
     static char *z = 0;
-    static int alloced = 0;
+    static size_t alloced = 0;
     static int used = 0;
     int c;
     char zInt[40];
-    
+
     if( zText==0 ){
         used = 0;
         return z;
@@ -542,15 +542,15 @@ PRIVATE void translate_code(struct lemon *lemp, struct rule *rp){
     int i;
     char lhsused = 0;    /* True if the LHS element has been used */
     char used[MAXRHS];   /* True for each RHS element which is used */
-    
+
     for(i=0; i<rp->nrhs; i++) used[i] = 0;
     lhsused = 0;
-    
+
     if( rp->code==0 ){
         rp->code = "\n";
         rp->line = rp->ruleline;
     }
-    
+
     append_str(0,0,0,0);
     for(cp=rp->code; *cp; cp++){
         if( isalpha(*cp) && (cp==rp->code || (!isalnum(cp[-1]) && cp[-1]!='_')) ){
@@ -589,7 +589,7 @@ PRIVATE void translate_code(struct lemon *lemp, struct rule *rp){
         }
         append_str(cp, 1, 0, 0);
     } /* End loop */
-    
+
     /* Check to make sure the LHS has been used */
     if( rp->lhsalias && !lhsused ){
         ErrorMsg(lemp->filename,rp->ruleline,
@@ -597,7 +597,7 @@ PRIVATE void translate_code(struct lemon *lemp, struct rule *rp){
                  rp->lhsalias,rp->lhs->name,rp->lhsalias);
         lemp->errorcnt++;
     }
-    
+
     /* Generate destructor code for RHS symbols which are not used in the
      ** reduce code */
     for(i=0; i<rp->nrhs; i++){
@@ -629,7 +629,7 @@ PRIVATE void emit_code(FILE *out, struct rule *rp, struct lemon *lemp, int *line
 {
     char *cp;
     int linecnt = 0;
-    
+
     /* Generate code to do the reduce action */
     if( rp->code ){
         tplt_linedir(out,rp->line,lemp->filename);
@@ -641,7 +641,7 @@ PRIVATE void emit_code(FILE *out, struct rule *rp, struct lemon *lemp, int *line
         fprintf(out,"}\n");
         tplt_linedir(out,*lineno,lemp->outname);
     } /* End if( rp->code ) */
-    
+
     return;
 }
 
@@ -666,7 +666,7 @@ void print_stack_union(
     int i,j;                  /* Loop counters */
     int hash;                 /* For hashing the name of a type */
     char *name;               /* Name of the parser */
-    
+
     /* Allocate and initialize types[] and allocate stddt[] */
     arraysize = lemp->nsymbol * 2;
     types = (char**)calloc( arraysize, sizeof(char*) );
@@ -687,7 +687,7 @@ void print_stack_union(
         ErrorMsg("lemon", LINENO_NONE, "Out of memory.\n");
         exit(1);
     }
-    
+
     /* Build a hash table of datatypes. The ".dtnum" field of each symbol
      ** is filled in with the hash index plus 1.  A ".dtnum" value of 0 is
      ** used for terminal symbols.  If there is no %default_type defined then
@@ -735,14 +735,14 @@ void print_stack_union(
             strcpy(types[hash],stddt);
         }
     }
-    
+
     /* Print out the definition of YYTOKENTYPE and YYMINORTYPE */
     lineno = *plineno;
     if (language == LANG_D) {
         /* D language. */
         fprintf(out,"alias %s token_t;\n", lemp->tokentype ?
                 lemp->tokentype : "void*"); lineno++;
-        
+
         fprintf(out,"private union YYMINORTYPE {\n"); lineno++;
         fprintf(out,"  token_t yy0;\n"); lineno++;
         for(i=0; i<arraysize; i++){
@@ -756,7 +756,7 @@ void print_stack_union(
         free(stddt);
         free(types);
         fprintf(out,"}\n"); lineno++;
-        
+
     } else {
         /* C and C++ languages. */
         name = lemp->name ? lemp->name : "Parse";
@@ -860,7 +860,7 @@ void ReportTable(
     int mnTknOfst, mxTknOfst;
     int mnNtOfst, mxNtOfst;
     struct axset *ax;
-    
+
     in = tplt_open(lemp);
     if( in==0 ) return;
     out = file_open(lemp, language==LANG_D ? ".d" :
@@ -872,7 +872,7 @@ void ReportTable(
     }
     lineno = 1;
     tplt_xfer(lemp->name,in,out,&lineno);
-    
+
     /* Generate the include code, if any */
     tplt_print(out,lemp,lemp->include,lemp->includeln,&lineno);
     if( mhflag ){
@@ -881,7 +881,7 @@ void ReportTable(
         free(name);
     }
     tplt_xfer(lemp->name,in,out,&lineno);
-    
+
     /* Generate #defines for all tokens */
     if (language == LANG_D) {
         char *prefix = lemp->tokenprefix ? lemp->tokenprefix : "";
@@ -905,7 +905,7 @@ void ReportTable(
         fprintf(out,"#endif\n"); lineno++;
     }
     tplt_xfer(lemp->name,in,out,&lineno);
-    
+
     /* Generate the defines */
     if (language == LANG_D) {
         /* D language. */
@@ -922,7 +922,7 @@ void ReportTable(
         fprintf(out,"const int YYNRULE = %d;\n",lemp->nrule);  lineno++;
         fprintf(out,"const int YYERRORSYMBOL = %d;\n", lemp->errsym->useCnt ?
                 lemp->errsym->index : -1);  lineno++;
-        
+
     } else {
         /* C and C++ languages. */
         fprintf(out,"#define YYCODETYPE %s\n",
@@ -977,7 +977,7 @@ void ReportTable(
         }
     }
     tplt_xfer(lemp->name,in,out,&lineno);
-    
+
     /* Generate the action table and its associates:
      **
      **  yy_action[]        A single table containing all actions.
@@ -989,7 +989,7 @@ void ReportTable(
      **                     shifting non-terminals after a reduce.
      **  yy_default[]       Default action for each state.
      */
-    
+
     /* Compute the actions on all states and count them up */
     ax = calloc(lemp->nstate*2, sizeof(ax[0]));
     if( ax==0 ){
@@ -1007,7 +1007,7 @@ void ReportTable(
     }
     mxTknOfst = mnTknOfst = 0;
     mxNtOfst = mnNtOfst = 0;
-    
+
     /* Compute the action table.  In order to try to keep the size of the
      ** action table to a minimum, the heuristic of placing the largest action
      ** sets first is used.
@@ -1042,7 +1042,7 @@ void ReportTable(
         }
     }
     free(ax);
-    
+
     /* Output the yy_action table */
     if (language == LANG_D)
         fprintf(out,"private static const YYACTIONTYPE yy_action[] = [\n");
@@ -1067,7 +1067,7 @@ void ReportTable(
         else
             fprintf(out, "};\n");
             lineno++;
-    
+
     /* Output the yy_lookahead table */
     if (language == LANG_D)
         fprintf(out,"private static const YYCODETYPE yy_lookahead[] = [\n");
@@ -1091,7 +1091,7 @@ void ReportTable(
         else
             fprintf(out, "};\n");
             lineno++;
-    
+
     /* Output the yy_shift_ofst[] table */
     if (language == LANG_D)
         fprintf(out, "const int YY_SHIFT_USE_DFLT = %d;\n", mnTknOfst-1);
@@ -1131,7 +1131,7 @@ void ReportTable(
         else
             fprintf(out, "};\n");
             lineno++;
-    
+
     /* Output the yy_reduce_ofst[] table */
     if (language == LANG_D)
         fprintf(out, "const int YY_REDUCE_USE_DFLT = %d;\n", mnNtOfst-1);
@@ -1171,7 +1171,7 @@ void ReportTable(
         else
             fprintf(out, "};\n");
             lineno++;
-    
+
     /* Output the default action table */
     if (language == LANG_D)
         fprintf(out, "private static const YYACTIONTYPE yy_default[] = [\n");
@@ -1196,7 +1196,7 @@ void ReportTable(
             fprintf(out, "};\n");
             lineno++;
     tplt_xfer(lemp->name,in,out,&lineno);
-    
+
     /* Generate the table of fallback tokens.
      */
     if( lemp->has_fallback ){
@@ -1212,7 +1212,7 @@ void ReportTable(
         }
     }
     tplt_xfer(lemp->name, in, out, &lineno);
-    
+
     /* Generate a table containing the symbolic name of every symbol
      */
     for(i=0; i<lemp->nsymbol; i++){
@@ -1222,7 +1222,7 @@ void ReportTable(
     }
     if( (i&3)!=0 ){ fprintf(out,"\n"); lineno++; }
     tplt_xfer(lemp->name,in,out,&lineno);
-    
+
     /* Generate a table containing a text string that describes every
      ** rule in the rule set of the grammer.  This information is used
      ** when tracing REDUCE actions.
@@ -1234,7 +1234,7 @@ void ReportTable(
         fprintf(out,"\",\n"); lineno++;
     }
     tplt_xfer(lemp->name,in,out,&lineno);
-    
+
     /* Generate code which executes every time a symbol is popped from
      ** the stack while processing errors or while destroying the parser.
      ** (In other words, generate the %destructor actions)
@@ -1272,7 +1272,7 @@ void ReportTable(
         if( sp==0 || sp->type==TERMINAL || sp->destructor==0 ) continue;
         fprintf(out,"    case %d: /* %s */\n",
                 sp->index, sp->name); lineno++;
-        
+
         /* Combine duplicate destructors into a single case */
         for(j=i+1; j<lemp->nsymbol; j++){
             struct symbol *sp2 = lemp->symbols[j];
@@ -1284,16 +1284,16 @@ void ReportTable(
                 sp2->destructor = 0;
             }
         }
-        
+
         emit_destructor_code(out,lemp->symbols[i],lemp,&lineno);
         fprintf(out,"      break;\n"); lineno++;
     }
     tplt_xfer(lemp->name,in,out,&lineno);
-    
+
     /* Generate code which executes whenever the parser stack overflows */
     tplt_print(out,lemp,lemp->overflow,lemp->overflowln,&lineno);
     tplt_xfer(lemp->name,in,out,&lineno);
-    
+
     /* Generate the table of rule information
      **
      ** Note: This code depends on the fact that rules are number
@@ -1303,7 +1303,7 @@ void ReportTable(
         fprintf(out,"  { %d, %d },\n",rp->lhs->index,rp->nrhs); lineno++;
     }
     tplt_xfer(lemp->name,in,out,&lineno);
-    
+
     /* Generate code which execution during each REDUCE action */
     for(rp=lemp->rule; rp; rp=rp->next){
         translate_code(lemp, rp);
@@ -1326,22 +1326,22 @@ void ReportTable(
         fprintf(out,"        break;\n"); lineno++;
     }
     tplt_xfer(lemp->name,in,out,&lineno);
-    
+
     /* Generate code which executes if a parse fails */
     tplt_print(out,lemp,lemp->failure,lemp->failureln,&lineno);
     tplt_xfer(lemp->name,in,out,&lineno);
-    
+
     /* Generate code which executes when a syntax error occurs */
     tplt_print(out,lemp,lemp->error,lemp->errorln,&lineno);
     tplt_xfer(lemp->name,in,out,&lineno);
-    
+
     /* Generate code which executes when the parser accepts its input */
     tplt_print(out,lemp,lemp->accept,lemp->acceptln,&lineno);
     tplt_xfer(lemp->name,in,out,&lineno);
-    
+
     /* Append any addition code the user desires */
     tplt_print(out,lemp,lemp->extracode,lemp->extracodeln,&lineno);
-    
+
     fclose(in);
     fclose(out);
     return;
@@ -1355,7 +1355,7 @@ void ReportHeader(struct lemon *lemp)
     char line[LINESIZE];
     char pattern[LINESIZE];
     int i;
-    
+
     if( lemp->tokenprefix ) prefix = lemp->tokenprefix;
         else                    prefix = "";
             in = file_open(lemp,".h","rb");
@@ -1395,13 +1395,13 @@ void CompressTables(struct lemon *lemp)
     int nbest, n;
     int i;
     int usesWildcard;
-    
+
     for(i=0; i<lemp->nstate; i++){
         stp = lemp->sorted[i];
         nbest = 0;
         rbest = 0;
         usesWildcard = 0;
-        
+
         for(ap=stp->ap; ap; ap=ap->next){
             if( ap->type==SHIFT && ap->sp==lemp->wildcard ){
                 usesWildcard = 1;
@@ -1422,14 +1422,14 @@ void CompressTables(struct lemon *lemp)
                 rbest = rp;
             }
         }
-        
+
         /* Do not make a default if the number of rules to default
          ** is not at least 1 or if the wildcard token is a possible
          ** lookahead.
          */
         if( nbest<1 || usesWildcard ) continue;
-        
-        
+
+
         /* Combine matching REDUCE actions into a single default */
         for(ap=stp->ap; ap; ap=ap->next){
             if( ap->type==REDUCE && ap->x.rp==rbest ) break;
@@ -1454,7 +1454,7 @@ static int stateResortCompare(const void *a, const void *b){
     const struct state *pA = *(const struct state**)a;
     const struct state *pB = *(const struct state**)b;
     int n;
-    
+
     n = pB->nNtAct - pA->nNtAct;
     if( n==0 ){
         n = pB->nTknAct - pA->nTknAct;
@@ -1472,7 +1472,7 @@ void ResortStates(struct lemon *lemp)
     int i;
     struct state *stp;
     struct action *ap;
-    
+
     for(i=0; i<lemp->nstate; i++){
         stp = lemp->sorted[i];
         stp->nTknAct = stp->nNtAct = 0;

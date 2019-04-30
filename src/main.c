@@ -25,7 +25,7 @@
 /* Report an out-of-memory condition and abort.  This function
  ** is used mostly by the "MemoryCheck" macro in struct.h
  */
-void memory_error(){
+void memory_error(void){
     ErrorMsg("lemon", LINENO_NONE, "Out of memory.  Aborting...\n");
     exit(1);
 }
@@ -60,10 +60,10 @@ static void handle_D_option(char *z){
 static void handle_l_option(char *z){
     if (strcmp (z, "c") == 0) {
         language = LANG_C;
-        
+
     } else if (strcmp (z, "c++") == 0) {
         language = LANG_CPP;
-        
+
     } else if (strcmp (z, "d") == 0) {
         language = LANG_D;
     }
@@ -73,6 +73,8 @@ static void handle_l_option(char *z){
 /* The main program.  Parse the command line and do it... */
 int main(int argc, char **argv)
 {
+    UNUSED_ARG(argc);
+
     static int version = 0;
     static int rpflag = 0;
     static int basisflag = 0;
@@ -95,7 +97,7 @@ int main(int argc, char **argv)
     };
     int i;
     struct lemon lem;
-    
+
     OptInit(argv,options,stderr);
     if( version ){
         printf("Lemon version 1.0\n");
@@ -107,7 +109,7 @@ int main(int argc, char **argv)
     }
     memset(&lem, 0, sizeof(lem));
     lem.errorcnt = 0;
-    
+
     /* Initialize the machine */
     Strsafe_init();
     Symbol_init();
@@ -118,7 +120,7 @@ int main(int argc, char **argv)
     Symbol_new("$");
     lem.errsym = Symbol_new("error");
     lem.errsym->useCnt = 0;
-    
+
     /* Parse the input file */
     Parse(&lem);
     if( lem.errorcnt ) exit(lem.errorcnt);
@@ -126,7 +128,7 @@ int main(int argc, char **argv)
             ErrorMsg(lem.filename, LINENO_NONE, "Empty grammar.\n");
             exit(1);
         }
-    
+
     /* Count and index the symbols of the grammar */
     lem.nsymbol = Symbol_count();
     Symbol_new("{default}");
@@ -137,49 +139,49 @@ int main(int argc, char **argv)
         for(i=0; i<=lem.nsymbol; i++) lem.symbols[i]->index = i;
             for(i=1; isupper(lem.symbols[i]->name[0]); i++);
     lem.nterminal = i;
-    
+
     /* Generate a reprint of the grammar, if requested on the command line */
     if( rpflag ){
         Reprint(&lem);
     }else{
         /* Initialize the size for all follow and first sets */
         SetSize(lem.nterminal+1);
-        
+
         /* Find the precedence for every production rule (that has one) */
         FindRulePrecedences(&lem);
-        
+
         /* Compute the lambda-nonterminals and the first-sets for every
          ** nonterminal */
         FindFirstSets(&lem);
-        
+
         /* Compute all LR(0) states.  Also record follow-set propagation
          ** links so that the follow-set can be computed later */
         lem.nstate = 0;
         FindStates(&lem);
         lem.sorted = State_arrayof();
-        
+
         /* Tie up loose ends on the propagation links */
         FindLinks(&lem);
-        
+
         /* Compute the follow set of every reducible configuration */
         FindFollowSets(&lem);
-        
+
         /* Compute the action tables */
         FindActions(&lem);
-        
+
         /* Compress the action tables */
         if( compress==0 ) CompressTables(&lem);
-        
+
         /* Reorder and renumber the states so that states with fewer choices
          ** occur at the end. */
         ResortStates(&lem);
-        
+
         /* Generate a report of the parser generated.  (the "y.output" file) */
         if( !quiet ) ReportOutput(&lem);
-        
+
         /* Generate the source code for the parser */
         ReportTable(&lem, mhflag);
-        
+
         /* Produce a header file for use by the scanner.  (This step is
          ** omitted if the "-m" option is used because makeheaders will
          ** generate the file for us.) */
