@@ -12,6 +12,8 @@
 
 #include "lemon.h"
 
+#define UNUSED_ARG(x) (void) x
+
 enum {
     LINENO_NONE = 0
 };

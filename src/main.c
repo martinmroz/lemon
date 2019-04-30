@@ -73,6 +73,8 @@ static void handle_l_option(char *z){
 /* The main program.  Parse the command line and do it... */
 int main(int argc, char **argv)
 {
+    UNUSED_ARG(argc);
+
     static int version = 0;
     static int rpflag = 0;
     static int basisflag = 0;

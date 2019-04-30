@@ -426,6 +426,7 @@ static int resolve_conflict(
     struct action *apy,
     struct symbol *errsym)   /* The error symbol (NULL otherwise) */
 {
+    UNUSED_ARG(errsym);
     struct symbol *spx, *spy;
     int errcnt = 0;
     assert( apx->sp==apy->sp );  /* Otherwise there would be no conflict */
