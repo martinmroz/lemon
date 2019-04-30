@@ -1,0 +1,4 @@
+ex[0-9]
+example[0-9].[ch]
+example[0-9].out
+lexer.c
