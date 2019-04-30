@@ -29,9 +29,9 @@
  * are not RHS symbols with a defined precedence, the precedence
  * symbol field is left blank.
  */
-void FindRulePrecedences(struct lemon *xp);
+void FindRulePrecedences(struct lemon *lemp);
 
-/** 
+/**
  * Find all nonterminals which will generate the empty string.
  * Then go back and compute the first sets of every nonterminal.
  * The first set is the set of all terminal symbols which can begin
@@ -39,7 +39,7 @@ void FindRulePrecedences(struct lemon *xp);
  */
 void FindFirstSets(struct lemon *lemp);
 
-/** 
+/**
  * Compute all LR(0) states for the grammar.  Links
  * are added to between some states so that the LR(1) follow sets
  * can be computed later.
@@ -51,7 +51,7 @@ void FindStates(struct lemon *lemp);
  */
 void FindLinks(struct lemon *lemp);
 
-/** 
+/**
  * Compute all followsets.
  *
  * A followset is the set of all symbols which can come immediately

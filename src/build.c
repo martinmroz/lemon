@@ -17,10 +17,10 @@
 #include "struct.h"
 #include "table.h"
 
-void FindRulePrecedences(struct lemon *xp)
+void FindRulePrecedences(struct lemon *lemp)
 {
     struct rule *rp;
-    for(rp=xp->rule; rp; rp=rp->next){
+    for(rp=lemp->rule; rp; rp=rp->next){
         if( rp->precsym==0 ){
             int i, j;
             for(i=0; i<rp->nrhs && rp->precsym==0; i++){
@@ -46,14 +46,14 @@ void FindFirstSets(struct lemon *lemp)
     int i, j;
     struct rule *rp;
     int progress;
-    
+
     for(i=0; i<lemp->nsymbol; i++){
         lemp->symbols[i]->lambda = LEMON_FALSE;
     }
     for(i=lemp->nterminal; i<lemp->nsymbol; i++){
         lemp->symbols[i]->firstset = SetNew();
     }
-    
+
     /* First compute all lambdas */
     do{
         progress = 0;
@@ -69,7 +69,7 @@ void FindFirstSets(struct lemon *lemp)
             }
         }
     }while( progress );
-    
+
     /* Now compute all first sets */
     do{
         struct symbol *s1, *s2;
