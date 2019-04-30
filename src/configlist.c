@@ -27,7 +27,7 @@ static struct config *basis = 0;         /* Top of list of basis configs */
 static struct config **basisend = 0;     /* End of list of basis configs */
 
 /* Return a pointer to a new configuration */
-PRIVATE struct config *newconfig(){
+PRIVATE struct config *newconfig(void){
     struct config *new;
     if( freelist==0 ){
         int i;
@@ -46,15 +46,14 @@ PRIVATE struct config *newconfig(){
 }
 
 /* The configuration "old" is no longer used */
-PRIVATE void deleteconfig(old)
-struct config *old;
+PRIVATE void deleteconfig(struct config *old)
 {
     old->next = freelist;
     freelist = old;
 }
 
 /* Initialized the configuration list builder */
-void Configlist_init(){
+void Configlist_init(void){
     current = 0;
     currentend = &current;
     basis = 0;
@@ -64,7 +63,7 @@ void Configlist_init(){
 }
 
 /* Initialized the configuration list builder */
-void Configlist_reset(){
+void Configlist_reset(void){
     current = 0;
     currentend = &current;
     basis = 0;
@@ -74,12 +73,12 @@ void Configlist_reset(){
 }
 
 /* Add another configuration to the configuration list */
-struct config *Configlist_add(rp,dot)
-struct rule *rp;    /* The rule */
-int dot;            /* Index into the RHS of the rule where the dot goes */
+struct config *Configlist_add(
+    struct rule *rp,    /* The rule */
+    int dot)            /* Index into the RHS of the rule where the dot goes */
 {
     struct config *cfp, model;
-    
+
     assert( currentend!=0 );
     model.rp = rp;
     model.dot = dot;
@@ -104,7 +103,7 @@ int dot;            /* Index into the RHS of the rule where the dot goes */
 struct config *Configlist_addbasis(struct rule *rp, int dot)
 {
     struct config *cfp, model;
-    
+
     assert( basisend!=0 );
     assert( currentend!=0 );
     model.rp = rp;
@@ -135,7 +134,7 @@ void Configlist_closure(struct lemon *lemp)
     struct rule *rp, *newrp;
     struct symbol *sp, *xsp;
     int i, dot;
-    
+
     assert( currentend!=0 );
     for(cfp=current; cfp; cfp=cfp->next){
         rp = cfp->rp;
@@ -174,14 +173,14 @@ void Configlist_closure(struct lemon *lemp)
 }
 
 /* Sort the configuration list */
-void Configlist_sort(){
+void Configlist_sort(void){
     current = (struct config *)msort((char *)current,(char **)&(current->next),(msort_comparator)Configcmp);
     currentend = 0;
     return;
 }
 
 /* Sort the basis configuration list */
-void Configlist_sortbasis(){
+void Configlist_sortbasis(void){
     basis = (struct config *)msort((char *)current,(char **)&(current->bp),(msort_comparator)Configcmp);
     basisend = 0;
     return;
@@ -189,7 +188,7 @@ void Configlist_sortbasis(){
 
 /* Return a pointer to the head of the configuration list and
  ** reset the list */
-struct config *Configlist_return(){
+struct config *Configlist_return(void){
     struct config *old;
     old = current;
     current = 0;
@@ -199,7 +198,7 @@ struct config *Configlist_return(){
 
 /* Return a pointer to the head of the configuration list and
  ** reset the list */
-struct config *Configlist_basis(){
+struct config *Configlist_basis(void){
     struct config *old;
     old = basis;
     basis = 0;
@@ -208,8 +207,7 @@ struct config *Configlist_basis(){
 }
 
 /* Free all elements of the given configuration list */
-void Configlist_eat(cfp)
-struct config *cfp;
+void Configlist_eat(struct config *cfp)
 {
     struct config *nextcfp;
     for(; cfp; cfp=nextcfp){

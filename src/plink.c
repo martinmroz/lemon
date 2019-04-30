@@ -18,9 +18,9 @@
 static struct plink *plink_freelist = 0;
 
 /* Allocate a new plink */
-struct plink *Plink_new(){
+struct plink *Plink_new(void){
     struct plink *new;
-    
+
     if( plink_freelist==0 ){
         int i;
         int amt = 100;
@@ -63,7 +63,7 @@ void Plink_copy(struct plink **to, struct plink *from)
 void Plink_delete(struct plink *plp)
 {
     struct plink *nextpl;
-    
+
     while( plp ){
         nextpl = plp->next;
         plp->next = plink_freelist;

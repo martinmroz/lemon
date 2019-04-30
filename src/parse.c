@@ -541,13 +541,13 @@ void Parse(struct lemon *gp)
     int c;
     char *cp, *nextcp;
     int startline = 0;
-    
+
     memset(&ps, '\0', sizeof(ps));
     ps.gp = gp;
     ps.filename = gp->filename;
     ps.errorcnt = 0;
     ps.state = INITIALIZE;
-    
+
     /* Begin by reading the input file */
     fp = fopen(ps.filename,"rb");
     if( fp==0 ){
@@ -574,10 +574,10 @@ void Parse(struct lemon *gp)
     }
     fclose(fp);
     filebuf[filesize] = 0;
-    
+
     /* Make an initial pass through the file to handle %ifdef and %ifndef */
     preprocess_input(filebuf);
-    
+
     /* Now scan the text of the input file */
     lineno = 1;
     for(cp=filebuf; (c= *cp)!=0; ){

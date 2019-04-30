@@ -203,9 +203,7 @@ PRIVATE struct state *getstate(struct lemon *lemp)
 /*
  ** Return true if two symbols are the same.
  */
-int same_symbol(a,b)
-struct symbol *a;
-struct symbol *b;
+int same_symbol(struct symbol *a, struct symbol *b)
 {
     int i;
     if( a==b ) return 1;
@@ -221,9 +219,9 @@ struct symbol *b;
 /* Construct all successor states to the given state.  A "successor"
  ** state is any state which can be reached by a shift action.
  */
-PRIVATE void buildshifts(lemp,stp)
-struct lemon *lemp;
-struct state *stp;     /* The state from which successors are computed */
+PRIVATE void buildshifts(
+    struct lemon *lemp,
+    struct state *stp)   /* The state from which successors are computed */
 {
     struct config *cfp;  /* For looping thru the config closure of "stp" */
     struct config *bcfp; /* For the inner loop on config closure of "stp" */
@@ -423,10 +421,10 @@ void FindActions(struct lemon *lemp)
  ** If either action is a SHIFT, then it must be apx.  This
  ** function won't work if apx->type==REDUCE and apy->type==SHIFT.
  */
-static int resolve_conflict(apx,apy,errsym)
-struct action *apx;
-struct action *apy;
-struct symbol *errsym;   /* The error symbol (if defined.  NULL otherwise) */
+static int resolve_conflict(
+    struct action *apx,
+    struct action *apy,
+    struct symbol *errsym)   /* The error symbol (NULL otherwise) */
 {
     struct symbol *spx, *spy;
     int errcnt = 0;
