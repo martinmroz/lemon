@@ -1,3 +1,4 @@
+*.swp
 *.o
 lemon
 lemon.exe
