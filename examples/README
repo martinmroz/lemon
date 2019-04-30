@@ -9,7 +9,7 @@ http://sourceforge.net/project/filemodule_monitor.php?filemodule_id=124528
 
 example1.y
 ~~~~~~~~~~
-      This is a very simple calulator. To compile the
+      This is a very simple calculator. To compile the
       example do the following:
 
          $ make
@@ -79,7 +79,7 @@ example2.y
 
       This structure supports both a value and a count.
       You could add many more values, and allocate memory
-      to z if you wanted. One, note, you cannot put in
+      to z if you wanted. One note, you cannot put in
       C++  strings or other STL containers directly into
       this structure; instead, you would need to have pointers
       to such structures. Note, if memory was allocated for z, you'd
@@ -95,7 +95,7 @@ example3.y
 
 example4.y
 ~~~~~~~~~~
-       This is the first example that ends the grammer with
+       This is the first example that ends the grammar with
        a newline.
 
        In the file example4.y take a look at the following:
@@ -116,7 +116,7 @@ example4.y
 example5.y
 ~~~~~~~~~~
        This example puts everything together with flex. But,
-       take a peek at how lexer.l is complied in the Makefile
+       take a peek at how lexer.l is compiled in the Makefile
        with "flex lexer.l" instead of "flex++ lexer.l". The
        main_part5 for this example is in C++, so it's necessary
        to add the extern "C" directives.  True it could have been
@@ -159,7 +159,7 @@ http://www.hwaci.com/sw/lemon/
 (4) Home of sqlite
 http://www.sqlite.org/
 
-(5) Glossory of paser terms
+(5) Glossary of parser terms
 http://www.parsifalsoft.com/gloss.html
 
 (6) Good introduction to parsers
